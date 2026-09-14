@@ -2,6 +2,7 @@ import type {
   Category,
   Collection,
   CollectionDetail,
+  DownloadHistoryItem,
   Mood,
   Wallpaper,
   WallpaperDetail,
@@ -130,4 +131,50 @@ export async function searchWallpapers(query: string): Promise<Wallpaper[]> {
     .order('published_at', { ascending: false })
     .limit(40);
   return (data ?? []) as Wallpaper[];
+}
+
+// ── Favourites ────────────────────────────────────────────────────────────────
+
+export async function getFavourites(userId: string): Promise<Wallpaper[]> {
+  const { data } = await supabase
+    .from('favourites')
+    .select('wallpapers(*)')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((r: any) => r.wallpapers as Wallpaper);
+}
+
+export async function isFavourited(userId: string, wallpaperId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from('favourites')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('wallpaper_id', wallpaperId)
+    .maybeSingle();
+  return data !== null;
+}
+
+export async function addFavourite(userId: string, wallpaperId: string): Promise<void> {
+  await supabase.from('favourites').insert({ user_id: userId, wallpaper_id: wallpaperId });
+}
+
+export async function removeFavourite(userId: string, wallpaperId: string): Promise<void> {
+  await supabase.from('favourites').delete().eq('user_id', userId).eq('wallpaper_id', wallpaperId);
+}
+
+// ── Download history ──────────────────────────────────────────────────────────
+
+export async function logDownload(userId: string, wallpaperId: string): Promise<void> {
+  await supabase.from('download_history').insert({ user_id: userId, wallpaper_id: wallpaperId });
+}
+
+export async function getDownloadHistory(userId: string): Promise<DownloadHistoryItem[]> {
+  const { data } = await supabase
+    .from('download_history')
+    .select('*')
+    .eq('user_id', userId)
+    .order('downloaded_at', { ascending: false })
+    .limit(50);
+  return (data ?? []) as DownloadHistoryItem[];
 }

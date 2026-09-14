@@ -16,7 +16,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { WallpaperDetail } from '@aspekt/types';
 import { darkTheme, lightTheme } from '../../lib/theme';
-import { getWallpaper } from '../../lib/queries';
+import { addFavourite, getWallpaper, isFavourited, removeFavourite } from '../../lib/queries';
+import { useAuth } from '../../context/auth-context';
 
 const HEADER_HEIGHT = 380;
 
@@ -25,8 +26,11 @@ export default function WallpaperDetailScreen() {
   const router = useRouter();
   const scheme = useColorScheme();
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
+  const { user } = useAuth();
   const [wallpaper, setWallpaper] = useState<WallpaperDetail | null>(null);
   const [loading, setLoading] = useState(true);
+  const [favourited, setFavourited] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -37,6 +41,29 @@ export default function WallpaperDetailScreen() {
       });
     }
   }, [slug]);
+
+  useEffect(() => {
+    if (user && wallpaper) {
+      isFavourited(user.id, wallpaper.id).then(setFavourited);
+    }
+  }, [user, wallpaper]);
+
+  async function toggleFavourite() {
+    if (!user) {
+      router.push('/auth/sign-in' as never);
+      return;
+    }
+    if (!wallpaper || favLoading) return;
+    setFavLoading(true);
+    if (favourited) {
+      await removeFavourite(user.id, wallpaper.id);
+      setFavourited(false);
+    } else {
+      await addFavourite(user.id, wallpaper.id);
+      setFavourited(true);
+    }
+    setFavLoading(false);
+  }
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [HEADER_HEIGHT - 80, HEADER_HEIGHT - 40],
@@ -71,6 +98,20 @@ export default function WallpaperDetailScreen() {
         hitSlop={12}
       >
         <Ionicons name="chevron-back" size={22} color="#EDEDF2" />
+      </Pressable>
+
+      {/* Floating heart button */}
+      <Pressable
+        style={[styles.heartBtn, { backgroundColor: 'rgba(11,11,14,0.6)' }]}
+        onPress={toggleFavourite}
+        disabled={favLoading}
+        hitSlop={12}
+      >
+        <Ionicons
+          name={favourited ? 'heart' : 'heart-outline'}
+          size={20}
+          color={favourited ? '#EF4444' : '#EDEDF2'}
+        />
       </Pressable>
 
       {/* Sticky title bar (appears on scroll) */}
@@ -244,6 +285,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Platform.OS === 'ios' ? 56 : 28,
     left: 16,
+    zIndex: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heartBtn: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 56 : 28,
+    right: 16,
     zIndex: 20,
     width: 36,
     height: 36,

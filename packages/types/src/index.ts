@@ -55,3 +55,25 @@ export type WallpaperDetail = Wallpaper & {
 export type CollectionDetail = Collection & {
   wallpapers: Wallpaper[];
 };
+
+export type Profile = {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Favourite = {
+  id: string;
+  user_id: string;
+  wallpaper_id: string;
+  created_at: string;
+};
+
+export type DownloadHistoryItem = {
+  id: string;
+  user_id: string;
+  wallpaper_id: string;
+  downloaded_at: string;
+};

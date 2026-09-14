@@ -41,6 +41,9 @@ importers:
       '@aspekt/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@aspekt/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@supabase/supabase-js':
         specifier: ^2.116.0
         version: 2.116.0
@@ -126,6 +129,9 @@ importers:
       '@aspekt/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@aspekt/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@supabase/ssr':
         specifier: ^0.12.7
         version: 0.12.7(@supabase/supabase-js@2.116.0)
@@ -218,6 +224,18 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
+
+  packages/ui:
+    devDependencies:
+      '@aspekt/config':
+        specifier: workspace:*
+        version: link:../config
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      typescript-eslint:
+        specifier: ^8.70.0
+        version: 8.70.0(eslint@10.10.0(jiti@2.7.0)(supports-color@8.1.1))(supports-color@8.1.1)(typescript@5.9.3)
 
 packages:
 

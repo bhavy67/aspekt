@@ -1,0 +1,17 @@
+<!-- ASPEKT app icon — 1024×1024 master -->
+<!-- Export to PNG at 1024×1024 for App Store / Play Store submission -->
+<!-- Export to PNG at 512×512 (PWA), 192×192 (Android), 180×180 (Apple touch icon) -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <rect width="1024" height="1024" rx="230" fill="#0B0B0E"/>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+  <!-- Crop-bracket mark, centred in 1024×1024 canvas, arms inset ~180px -->
+  <path d="M180,440 L180,180 L440,180" stroke="url(#g)" stroke-width="56" stroke-linecap="square"/>
+  <path d="M584,180 L844,180 L844,440" stroke="url(#g)" stroke-width="56" stroke-linecap="square"/>
+  <path d="M180,584 L180,844 L440,844" stroke="url(#g)" stroke-width="56" stroke-linecap="square"/>
+  <path d="M584,844 L844,844 L844,584" stroke="url(#g)" stroke-width="56" stroke-linecap="square"/>
+</svg>

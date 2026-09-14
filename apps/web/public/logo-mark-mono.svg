@@ -1,0 +1,8 @@
+<!-- ASPEKT logo mark — monochrome, currentColor -->
+<!-- Use for: light-bg contexts, small sizes, print, embeds -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none">
+  <path d="M4,14 L4,4 L14,4" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+  <path d="M26,4 L36,4 L36,14" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+  <path d="M4,26 L4,36 L14,36" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+  <path d="M26,36 L36,36 L36,26" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+</svg>

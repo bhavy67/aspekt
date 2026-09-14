@@ -37,7 +37,8 @@ const config: ExpoConfig = {
     // Placeholder package name — replaced before Play Store submission
     package: 'com.placeholder.aspekt',
     adaptiveIcon: {
-      backgroundColor: '#FFFFFF',
+      // foregroundImage: './assets/images/adaptive-icon.png' — export from app-icon.svg at 1024×1024
+      backgroundColor: '#0B0B0E',
     },
     // Predictive back gesture — Android 14+ (API 34+)
     predictiveBackGestureEnabled: true,
@@ -67,7 +68,8 @@ const config: ExpoConfig = {
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#FFFFFF',
+        // Dark background matches Obsidian bg token. Splash image: export app-icon.svg at 200×200px.
+        backgroundColor: '#0B0B0E',
       },
     ],
   ],

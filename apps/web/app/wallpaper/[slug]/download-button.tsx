@@ -42,9 +42,11 @@ export function DownloadButton({
     });
   }, []);
 
+  const downloadUrl = `/api/download?url=${encodeURIComponent(imageUrl)}&filename=${wallpaperSlug}.jpg`;
+
   if (!isPremium || coinCost === 0 || spent) {
     return (
-      <a href={imageUrl} download={`${wallpaperSlug}.jpg`} target="_blank" rel="noreferrer">
+      <a href={downloadUrl} download={`${wallpaperSlug}.jpg`}>
         <Button variant="primary" size="lg" className="w-full">
           {spent ? `Downloaded (balance: ${coinBalance})` : 'Download Free'}
         </Button>
@@ -91,9 +93,8 @@ export function DownloadButton({
     setCoinBalance(result.newBalance);
     setSpent(true);
     const a = document.createElement('a');
-    a.href = imageUrl;
+    a.href = downloadUrl;
     a.download = `${wallpaperSlug}.jpg`;
-    a.target = '_blank';
     a.click();
   }
 

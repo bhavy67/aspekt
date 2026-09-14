@@ -1,11 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import type { User } from '@supabase/supabase-js';
 import { Logo } from './logo';
-import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 const NAV_LINKS = [
   { href: '/browse', label: 'Browse' },
@@ -13,13 +11,9 @@ const NAV_LINKS = [
   { href: '/collections', label: 'Collections' },
 ] as const;
 
-const supabase = createSupabaseBrowserClient();
-
 export function Nav() {
   const pathname = usePathname();
-  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 8);
@@ -27,17 +21,6 @@ export function Nav() {
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
   }, []);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      router.refresh();
-    });
-    return () => subscription.unsubscribe();
-  }, [router]);
 
   return (
     <header
@@ -74,22 +57,6 @@ export function Nav() {
           >
             Search
           </Link>
-
-          {user ? (
-            <Link
-              href="/account"
-              className="flex h-7 items-center rounded-md border border-border-strong bg-raised px-3 text-[11px] font-semibold uppercase tracking-widest text-muted transition-colors duration-150 hover:text-foreground"
-            >
-              Account
-            </Link>
-          ) : (
-            <Link
-              href="/auth/sign-in"
-              className="flex h-7 items-center rounded-md border border-border-strong bg-raised px-3 text-[11px] font-semibold uppercase tracking-widest text-muted transition-colors duration-150 hover:text-foreground"
-            >
-              Sign In
-            </Link>
-          )}
 
           <Link
             href="/download"

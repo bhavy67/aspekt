@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Animated,
   Image,
   Platform,
@@ -16,25 +15,32 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { WallpaperDetail } from '@aspekt/types';
 import { darkTheme, lightTheme } from '../../lib/theme';
-import { addFavourite, getWallpaper, isFavourited, removeFavourite } from '../../lib/queries';
-import { useAuth } from '../../context/auth-context';
-import { awardCoins, getCoinBalance, spendCoins } from '../../lib/coins';
+import { getWallpaper } from '../../lib/queries';
 
+const FAVOURITES_KEY = '@aspekt_favourites';
 const HEADER_HEIGHT = 380;
+
+async function getSlugs(): Promise<string[]> {
+  const raw = await AsyncStorage.getItem(FAVOURITES_KEY);
+  return raw ? (JSON.parse(raw) as string[]) : [];
+}
+
+async function saveSlugs(slugs: string[]): Promise<void> {
+  await AsyncStorage.setItem(FAVOURITES_KEY, JSON.stringify(slugs));
+}
 
 export default function WallpaperDetailScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
   const scheme = useColorScheme();
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
-  const { user } = useAuth();
   const [wallpaper, setWallpaper] = useState<WallpaperDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [favourited, setFavourited] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
-  const [coinBalance, setCoinBalance] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -46,76 +52,44 @@ export default function WallpaperDetailScreen() {
     }
   }, [slug]);
 
+  // Load favourited state from AsyncStorage
   useEffect(() => {
-    if (user && wallpaper) {
-      isFavourited(user.id, wallpaper.id).then(setFavourited);
-      getCoinBalance(user.id).then(setCoinBalance);
-    }
-  }, [user, wallpaper]);
+    if (!slug) return;
+    getSlugs().then((slugs) => setFavourited(slugs.includes(slug)));
+  }, [slug]);
 
   async function handleShare() {
     if (!wallpaper) return;
     try {
-      const result = await Share.share({
+      await Share.share({
         message: `Check out "${wallpaper.title}" on ASPEKT`,
         url: wallpaper.thumbnail_url,
       });
-      if (result.action === Share.sharedAction && user) {
-        const newBalance = await awardCoins(user.id, 'share', wallpaper.id);
-        setCoinBalance(newBalance);
-      }
     } catch {
-      // share dismissed — no reward
+      // share dismissed
     }
   }
 
-  async function handleSetWallpaper() {
-    if (!user) {
-      router.push('/auth/sign-in' as never);
-      return;
-    }
+  function handleSetWallpaper() {
     if (!wallpaper) return;
-    if (wallpaper.is_premium && wallpaper.coin_cost > 0) {
-      if (coinBalance < wallpaper.coin_cost) {
-        Alert.alert(
-          'Not Enough Coins',
-          `You need ${wallpaper.coin_cost} coins to unlock this wallpaper. You have ${coinBalance}.`,
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Earn Coins',
-              onPress: () => router.push('/(tabs)/profile/coins' as never),
-            },
-          ],
-        );
-        return;
-      }
-      try {
-        const newBalance = await spendCoins(user.id, wallpaper.coin_cost, wallpaper.id);
-        setCoinBalance(newBalance);
-      } catch {
-        Alert.alert('Error', 'Could not process coins. Please try again.');
-        return;
-      }
-    }
     router.push(`/wallpaper/customize?slug=${wallpaper.slug}` as never);
   }
 
   async function toggleFavourite() {
-    if (!user) {
-      router.push('/auth/sign-in' as never);
-      return;
-    }
-    if (!wallpaper || favLoading) return;
+    if (!slug || !wallpaper || favLoading) return;
     setFavLoading(true);
-    if (favourited) {
-      await removeFavourite(user.id, wallpaper.id);
-      setFavourited(false);
-    } else {
-      await addFavourite(user.id, wallpaper.id);
-      setFavourited(true);
+    try {
+      const slugs = await getSlugs();
+      if (favourited) {
+        await saveSlugs(slugs.filter((s) => s !== slug));
+        setFavourited(false);
+      } else {
+        await saveSlugs([slug, ...slugs]);
+        setFavourited(true);
+      }
+    } finally {
+      setFavLoading(false);
     }
-    setFavLoading(false);
   }
 
   const headerOpacity = scrollY.interpolate({
@@ -328,17 +302,8 @@ export default function WallpaperDetailScreen() {
           </Pressable>
         )}
         <Pressable style={styles.ctaPrimary} onPress={handleSetWallpaper}>
-          {wallpaper.is_premium && wallpaper.coin_cost > 0 ? (
-            <>
-              <Ionicons name="diamond-outline" size={18} color="#0B0B0E" />
-              <Text style={styles.ctaPrimaryText}>{wallpaper.coin_cost} Coins</Text>
-            </>
-          ) : (
-            <>
-              <Ionicons name="phone-portrait-outline" size={18} color="#0B0B0E" />
-              <Text style={styles.ctaPrimaryText}>Set Wallpaper</Text>
-            </>
-          )}
+          <Ionicons name="phone-portrait-outline" size={18} color="#0B0B0E" />
+          <Text style={styles.ctaPrimaryText}>Set Wallpaper</Text>
         </Pressable>
       </View>
     </View>

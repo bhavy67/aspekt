@@ -14,9 +14,7 @@ import { File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as IntentLauncher from 'expo-intent-launcher';
 import { darkTheme, lightTheme } from '../../lib/theme';
-import { getWallpaper, logDownload } from '../../lib/queries';
-import { useAuth } from '../../context/auth-context';
-import { awardCoins } from '../../lib/coins';
+import { getWallpaper } from '../../lib/queries';
 
 type Destination = 'lock' | 'home' | 'both';
 type Stage = 'picker' | 'saving' | 'success' | 'error';
@@ -44,7 +42,6 @@ export default function ApplyScreen() {
   const router = useRouter();
   const scheme = useColorScheme();
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
-  const { user } = useAuth();
   const [destination, setDestination] = useState<Destination>('both');
   const [stage, setStage] = useState<Stage>('picker');
   const [errorMsg, setErrorMsg] = useState('');
@@ -65,11 +62,6 @@ export default function ApplyScreen() {
 
       const downloaded = await File.downloadFileAsync(wallpaper.image_url, Paths.cache);
       await MediaLibrary.saveToLibraryAsync(downloaded.uri);
-
-      if (user) {
-        logDownload(user.id, wallpaper.id).catch(() => {});
-        awardCoins(user.id, 'apply', wallpaper.id).catch(() => {});
-      }
 
       if (Platform.OS === 'android') {
         await IntentLauncher.startActivityAsync(

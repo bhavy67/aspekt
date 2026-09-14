@@ -9,7 +9,7 @@ const TABS: { name: string; label: string; icon: IoniconName; iconActive: Ionico
   { name: 'index', label: 'Home', icon: 'home-outline', iconActive: 'home' },
   { name: 'explore', label: 'Explore', icon: 'compass-outline', iconActive: 'compass' },
   { name: 'collections', label: 'Collections', icon: 'albums-outline', iconActive: 'albums' },
-  { name: 'profile', label: 'Profile', icon: 'person-outline', iconActive: 'person' },
+  { name: 'profile', label: 'Saved', icon: 'bookmark-outline', iconActive: 'bookmark' },
 ];
 
 export default function TabLayout() {

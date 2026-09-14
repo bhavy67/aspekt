@@ -1,53 +1,87 @@
--- ASPEKT seed data — Phase 5
+-- ASPEKT seed data — Phase 13 (revamped with curated Unsplash wallpapers)
 -- Applied via: supabase db reset (local) or MCP execute_sql (remote)
 
 INSERT INTO public.categories (name, slug, description, cover_url, sort_order) VALUES
-('Abstract',     'abstract',     'Geometric, fluid, and digital art',               'https://picsum.photos/seed/aspekt-1/2560/1440',  1),
-('Architecture', 'architecture', 'Buildings, structures, and urban spaces',         'https://picsum.photos/seed/aspekt-7/2560/1440',  2),
-('Nature',       'nature',       'Landscapes, forests, oceans, and natural scenes', 'https://picsum.photos/seed/aspekt-13/2560/1440', 3),
-('Minimal',      'minimal',      'Clean, simple, and uncluttered compositions',     'https://picsum.photos/seed/aspekt-10/2560/1440', 4),
-('Dark',         'dark',         'Moody, atmospheric, and low-light imagery',       'https://picsum.photos/seed/aspekt-5/2560/1440',  5),
-('Gradient',     'gradient',     'Color washes, light leaks, smooth transitions',   'https://picsum.photos/seed/aspekt-19/2560/1440', 6);
+('Abstract',     'abstract',     'Geometric, fluid, and digital art',               'https://images.unsplash.com/photo-1700056397549-aeeaaa8d5906?w=2560&h=1440&fit=crop&q=90&auto=format', 1),
+('Architecture', 'architecture', 'Buildings, structures, and urban spaces',         'https://images.unsplash.com/photo-1752477296332-4194308c025f?w=2560&h=1440&fit=crop&q=90&auto=format', 2),
+('Nature',       'nature',       'Landscapes, forests, oceans, and natural scenes', 'https://images.unsplash.com/photo-1690382285917-73dfd2a22d07?w=2560&h=1440&fit=crop&q=90&auto=format', 3),
+('Minimal',      'minimal',      'Clean, simple, and uncluttered compositions',     'https://images.unsplash.com/photo-1741680581152-8ac5fb23ef47?w=2560&h=1440&fit=crop&q=90&auto=format', 4),
+('Dark',         'dark',         'Moody, atmospheric, and low-light imagery',       'https://images.unsplash.com/photo-1762279389006-43963a0cee55?w=2560&h=1440&fit=crop&q=90&auto=format', 5),
+('Gradient',     'gradient',     'Color washes, light leaks, smooth transitions',   'https://images.unsplash.com/photo-1759851942096-cf73a51532ba?w=2560&h=1440&fit=crop&q=90&auto=format', 6);
 
 INSERT INTO public.moods (name, slug, description, cover_url, sort_order) VALUES
-('Focus',  'focus',  'Clean and uncluttered for productive work', 'https://picsum.photos/seed/aspekt-10/2560/1440', 1),
-('Calm',   'calm',   'Serene, soft, and peaceful',                'https://picsum.photos/seed/aspekt-13/2560/1440', 2),
-('Bold',   'bold',   'Vibrant, energetic, and high contrast',     'https://picsum.photos/seed/aspekt-19/2560/1440', 3),
-('Dreamy', 'dreamy', 'Soft light, ethereal, and evocative',       'https://picsum.photos/seed/aspekt-1/2560/1440',  4);
+('Focus',  'focus',  'Clean and uncluttered for productive work', 'https://images.unsplash.com/photo-1741806914386-c60073a0fed3?w=2560&h=1440&fit=crop&q=90&auto=format', 1),
+('Calm',   'calm',   'Serene, soft, and peaceful',                'https://images.unsplash.com/photo-1771814536262-3c1320c8e9ce?w=2560&h=1440&fit=crop&q=90&auto=format', 2),
+('Bold',   'bold',   'Vibrant, energetic, and high contrast',     'https://images.unsplash.com/photo-1762279389006-43963a0cee55?w=2560&h=1440&fit=crop&q=90&auto=format', 3),
+('Dreamy', 'dreamy', 'Soft light, ethereal, and evocative',       'https://images.unsplash.com/photo-1748885107720-a9b45e5d9b92?w=2560&h=1440&fit=crop&q=90&auto=format', 4);
 
 INSERT INTO public.collections (name, slug, description, cover_url, curator_name, published_at) VALUES
-('Dark Mode Essentials', 'dark-mode-essentials', 'The finest wallpapers that shine on dark-themed setups',         'https://picsum.photos/seed/aspekt-5/2560/1440',  'ASPEKT Curatorial', now()),
-('Geometric Order',      'geometric-order',      'Precision, structure, and satisfying patterns',                   'https://picsum.photos/seed/aspekt-9/2560/1440',  'ASPEKT Curatorial', now()),
-('Natural Light',        'natural-light',        'Luminous outdoor scenes, golden-hour photography, open sky',     'https://picsum.photos/seed/aspekt-16/2560/1440', 'ASPEKT Curatorial', now());
+('Dark Mode Essentials', 'dark-mode-essentials', 'The finest wallpapers that shine on dark-themed setups',     'https://images.unsplash.com/photo-1700056397549-aeeaaa8d5906?w=2560&h=1440&fit=crop&q=90&auto=format', 'ASPEKT Curatorial', now()),
+('Geometric Order',      'geometric-order',      'Precision, structure, and satisfying patterns',               'https://images.unsplash.com/photo-1743102776040-3e36a6e6af3f?w=2560&h=1440&fit=crop&q=90&auto=format', 'ASPEKT Curatorial', now()),
+('Natural Light',        'natural-light',        'Luminous outdoor scenes, golden-hour photography, open sky', 'https://images.unsplash.com/photo-1690382285917-73dfd2a22d07?w=2560&h=1440&fit=crop&q=90&auto=format', 'ASPEKT Curatorial', now());
 
 INSERT INTO public.wallpapers (title,slug,image_url,thumbnail_url,width,height,is_free,is_premium,tags,artist_name,color_palette,published_at) VALUES
-('Aurora Cascade',  'aurora-cascade-a8f3',  'https://picsum.photos/seed/aspekt-1/2560/1440',  'https://picsum.photos/seed/aspekt-1/640/360',   2560,1440,true,false,ARRAY['abstract','aurora','flow'],           NULL,ARRAY['#818CF8','#22D3EE'],now()),
-('Indigo Depths',   'indigo-depths-b2c1',   'https://picsum.photos/seed/aspekt-2/1170/2532',  'https://picsum.photos/seed/aspekt-2/296/640',   1170,2532,true,false,ARRAY['abstract','indigo','deep'],            NULL,ARRAY['#818CF8','#4338CA'],now()),
-('Prismatic Flow',  'prismatic-flow-c9e4',  'https://picsum.photos/seed/aspekt-3/3840/2160',  'https://picsum.photos/seed/aspekt-3/640/360',   3840,2160,true,false,ARRAY['abstract','prismatic','light'],         NULL,ARRAY['#818CF8','#F472B6'],now()),
-('Void Crystal',    'void-crystal-d1f2',    'https://picsum.photos/seed/aspekt-4/1080/2400',  'https://picsum.photos/seed/aspekt-4/270/600',   1080,2400,true,false,ARRAY['dark','crystal','abstract'],           NULL,ARRAY['#0B0B0E','#22222E'],now()),
-('Obsidian Mirror', 'obsidian-mirror-e3a7', 'https://picsum.photos/seed/aspekt-5/2560/1440',  'https://picsum.photos/seed/aspekt-5/640/360',   2560,1440,true,false,ARRAY['dark','obsidian','minimal'],           NULL,ARRAY['#0B0B0E','#13131A'],now()),
-('Midnight Grid',   'midnight-grid-f5b8',   'https://picsum.photos/seed/aspekt-6/1920/1080',  'https://picsum.photos/seed/aspekt-6/640/360',   1920,1080,true,false,ARRAY['dark','grid','architecture'],          NULL,ARRAY['#0B0B0E','#818CF8'],now()),
-('Concrete Horizon','concrete-horizon-a1c2','https://picsum.photos/seed/aspekt-7/1170/2532',  'https://picsum.photos/seed/aspekt-7/296/640',   1170,2532,true,false,ARRAY['architecture','concrete','urban'],     NULL,ARRAY['#8686A0','#EDEDF2'],now()),
-('Glass Tower',     'glass-tower-b3d4',     'https://picsum.photos/seed/aspekt-8/3840/2160',  'https://picsum.photos/seed/aspekt-8/640/360',   3840,2160,true,false,ARRAY['architecture','glass','modern'],       NULL,ARRAY['#22D3EE','#F0F0F8'],now()),
-('Urban Geometry',  'urban-geometry-c5e6',  'https://picsum.photos/seed/aspekt-9/2560/1440',  'https://picsum.photos/seed/aspekt-9/640/360',   2560,1440,true,false,ARRAY['architecture','geometry','lines'],     NULL,ARRAY['#46465A','#EDEDF2'],now()),
-('Minimal White',   'minimal-white-d7f8',   'https://picsum.photos/seed/aspekt-10/3840/2160', 'https://picsum.photos/seed/aspekt-10/640/360',  3840,2160,true,false,ARRAY['minimal','white','clean'],             NULL,ARRAY['#F8F8FC','#E4E4F0'],now()),
-('Clean Lines',     'clean-lines-e9a0',     'https://picsum.photos/seed/aspekt-11/1920/1080', 'https://picsum.photos/seed/aspekt-11/640/360',  1920,1080,true,false,ARRAY['minimal','lines','graphic'],           NULL,ARRAY['#EDEDF2','#8686A0'],now()),
-('Paper Space',     'paper-space-f0b1',     'https://picsum.photos/seed/aspekt-12/2880/1800', 'https://picsum.photos/seed/aspekt-12/640/400',  2880,1800,true,false,ARRAY['minimal','paper','white'],             NULL,ARRAY['#F0F0F8','#DCDCEC'],now()),
-('Forest Veil',     'forest-veil-a2c3',     'https://picsum.photos/seed/aspekt-13/2560/1440', 'https://picsum.photos/seed/aspekt-13/640/360',  2560,1440,true,false,ARRAY['nature','forest','green'],             NULL,ARRAY['#059669','#022C22'],now()),
-('Mountain Echo',   'mountain-echo-b4d5',   'https://picsum.photos/seed/aspekt-14/1170/2532', 'https://picsum.photos/seed/aspekt-14/296/640',  1170,2532,true,false,ARRAY['nature','mountain','landscape'],       NULL,ARRAY['#6B7280','#E5E7EB'],now()),
-('Ocean Drift',     'ocean-drift-c6e7',     'https://picsum.photos/seed/aspekt-15/3840/2160', 'https://picsum.photos/seed/aspekt-15/640/360',  3840,2160,true,false,ARRAY['nature','ocean','water'],              NULL,ARRAY['#22D3EE','#0B0B0E'],now()),
-('Golden Hour',     'golden-hour-d8f9',     'https://picsum.photos/seed/aspekt-16/1080/2400', 'https://picsum.photos/seed/aspekt-16/270/600',  1080,2400,true,false,ARRAY['nature','sunset','warm','golden'],     NULL,ARRAY['#F59E0B','#EF4444'],now()),
-('Dusk Valley',     'dusk-valley-e0a1',     'https://picsum.photos/seed/aspekt-17/2560/1440', 'https://picsum.photos/seed/aspekt-17/640/360',  2560,1440,true,false,ARRAY['nature','dusk','valley','purple'],     NULL,ARRAY['#818CF8','#F59E0B'],now()),
-('Winter Fog',      'winter-fog-f2b3',      'https://picsum.photos/seed/aspekt-18/1920/1080', 'https://picsum.photos/seed/aspekt-18/640/360',  1920,1080,true,false,ARRAY['nature','winter','fog','minimal'],     NULL,ARRAY['#EDEDF2','#8686A0'],now()),
-('Gradient Pulse',  'gradient-pulse-a4c5',  'https://picsum.photos/seed/aspekt-19/1170/2532', 'https://picsum.photos/seed/aspekt-19/296/640',  1170,2532,true,false,ARRAY['gradient','pulse','vibrant'],          NULL,ARRAY['#818CF8','#22D3EE'],now()),
-('Chromatic Dawn',  'chromatic-dawn-b6d7',  'https://picsum.photos/seed/aspekt-20/3840/2160', 'https://picsum.photos/seed/aspekt-20/640/360',  3840,2160,true,false,ARRAY['gradient','chromatic','pink'],         NULL,ARRAY['#F472B6','#818CF8'],now()),
-('Neon Fade',       'neon-fade-c8e9',       'https://picsum.photos/seed/aspekt-21/2560/1440', 'https://picsum.photos/seed/aspekt-21/640/360',  2560,1440,true,false,ARRAY['gradient','neon','dark'],              NULL,ARRAY['#818CF8','#0B0B0E'],now()),
-('Solar Flare',     'solar-flare-d0f1',     'https://picsum.photos/seed/aspekt-22/1080/2400', 'https://picsum.photos/seed/aspekt-22/270/600',  1080,2400,true,false,ARRAY['gradient','solar','warm'],             NULL,ARRAY['#F59E0B','#EF4444'],now()),
-('Violet Dream',    'violet-dream-e2a3',    'https://picsum.photos/seed/aspekt-23/1920/1080', 'https://picsum.photos/seed/aspekt-23/640/360',  1920,1080,true,false,ARRAY['gradient','violet','purple'],          NULL,ARRAY['#818CF8','#7C3AED'],now()),
-('Teal Horizon',    'teal-horizon-f4b5',    'https://picsum.photos/seed/aspekt-24/1170/2532', 'https://picsum.photos/seed/aspekt-24/296/640',  1170,2532,true,false,ARRAY['gradient','teal','horizon'],           NULL,ARRAY['#22D3EE','#059669'],now()),
-('Cyberpunk Alley', 'cyberpunk-alley-a6c7', 'https://picsum.photos/seed/aspekt-25/3840/2160', 'https://picsum.photos/seed/aspekt-25/640/360',  3840,2160,true,false,ARRAY['dark','cyberpunk','neon','urban'],     NULL,ARRAY['#818CF8','#0B0B0E'],now()),
-('Red Desert',      'red-desert-b8d9',      'https://picsum.photos/seed/aspekt-26/2560/1440', 'https://picsum.photos/seed/aspekt-26/640/360',  2560,1440,true,false,ARRAY['nature','desert','red','warm'],        NULL,ARRAY['#EF4444','#F59E0B'],now()),
-('Ice Lake',        'ice-lake-c0e1',        'https://picsum.photos/seed/aspekt-27/1080/2400', 'https://picsum.photos/seed/aspekt-27/270/600',  1080,2400,true,false,ARRAY['nature','ice','cold','blue'],          NULL,ARRAY['#22D3EE','#F8F8FC'],now()),
-('Storm Break',     'storm-break-d2f3',     'https://picsum.photos/seed/aspekt-28/1920/1080', 'https://picsum.photos/seed/aspekt-28/640/360',  1920,1080,true,false,ARRAY['nature','storm','dramatic'],           NULL,ARRAY['#46465A','#0B0B0E'],now()),
-('Bronze Gate',     'bronze-gate-e4a5',     'https://picsum.photos/seed/aspekt-29/1170/2532', 'https://picsum.photos/seed/aspekt-29/296/640',  1170,2532,true,false,ARRAY['architecture','bronze','ancient'],     NULL,ARRAY['#D97706','#78350F'],now()),
-('Fractured Light', 'fractured-light-f6b7', 'https://picsum.photos/seed/aspekt-30/2880/1800', 'https://picsum.photos/seed/aspekt-30/640/400',  2880,1800,true,false,ARRAY['abstract','fractured','light'],        NULL,ARRAY['#F472B6','#818CF8'],now());
+
+-- DARK / AMOLED (7)
+('Emerald Void',     'emerald-void-f8a2',     'https://images.unsplash.com/photo-1699046794994-865a62e9ff6f?w=3840&h=2160&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1699046794994-865a62e9ff6f?w=640&h=360&fit=crop&q=80&auto=format',   3840,2160,true,false,ARRAY['dark','green','abstract','amoled'],               'Faded_Gallery',       ARRAY['#0B0B0E','#064E3B','#10B981'],            now()),
+('Obsidian Ripple',  'obsidian-ripple-c3e1',  'https://images.unsplash.com/photo-1736843638421-9c3770d28c91?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1736843638421-9c3770d28c91?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['dark','abstract','wavy','amoled','minimal'],       'Pawel Czerwinski',    ARRAY['#0B0B0E','#13131A','#22222E'],            now()),
+('Shadow Waves',     'shadow-waves-b7d4',     'https://images.unsplash.com/photo-1761998066484-daa29b9ad605?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1761998066484-daa29b9ad605?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['dark','abstract','wavy','minimal','amoled'],       'Andrew Kliatskyi',    ARRAY['#0B0B0E','#1A1A2E','#22222E'],            now()),
+('Neon Wire',        'neon-wire-a5c2',        'https://images.unsplash.com/photo-1762279389006-43963a0cee55?w=3840&h=2160&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1762279389006-43963a0cee55?w=640&h=360&fit=crop&q=80&auto=format',   3840,2160,true,false,ARRAY['dark','neon','abstract','cyberpunk'],             'Logan Voss',          ARRAY['#0B0B0E','#818CF8','#22D3EE'],            now()),
+('Carbon Curves',    'carbon-curves-d9f1',    'https://images.unsplash.com/photo-1761998066512-180aac759a3e?w=1170&h=2532&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1761998066512-180aac759a3e?w=296&h=640&fit=crop&q=80&auto=format',    1170,2532,true,false,ARRAY['dark','abstract','minimal','amoled','curves'],    'Andrew Kliatskyi',    ARRAY['#0B0B0E','#13131A'],                      now()),
+('Chrome Flow',      'chrome-flow-e2b8',      'https://images.unsplash.com/photo-1700056397549-aeeaaa8d5906?w=3840&h=2160&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1700056397549-aeeaaa8d5906?w=640&h=360&fit=crop&q=80&auto=format',   3840,2160,true,false,ARRAY['dark','iridescent','abstract','metallic'],         'Faded_Gallery',       ARRAY['#0B0B0E','#818CF8','#F472B6','#22D3EE'], now()),
+('Midnight Streak',  'midnight-streak-f4a6',  'https://images.unsplash.com/photo-1687844599821-e0eceea6f6a1?w=1080&h=2400&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1687844599821-e0eceea6f6a1?w=270&h=600&fit=crop&q=80&auto=format',    1080,2400,true,false,ARRAY['dark','neon','lights','amoled','moody'],          'Jatin Gajjar',        ARRAY['#0B0B0E','#22D3EE','#818CF8'],            now()),
+
+-- GRADIENT (7)
+('Burnt Horizon',    'burnt-horizon-c1d3',    'https://images.unsplash.com/photo-1749680287741-243118ed6b2c?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1749680287741-243118ed6b2c?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['gradient','orange','warm','abstract'],              'Philip Oroni',        ARRAY['#F59E0B','#EF4444','#D97706'],            now()),
+('Solar Wash',       'solar-wash-a7b5',       'https://images.unsplash.com/photo-1762503203781-27fe855f2e42?w=1920&h=1080&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1762503203781-27fe855f2e42?w=640&h=360&fit=crop&q=80&auto=format',   1920,1080,true,false,ARRAY['gradient','orange','yellow','warm','abstract'],    'asi mong',            ARRAY['#F97316','#F59E0B','#EF4444'],            now()),
+('Prismatic Blur',   'prismatic-blur-d2e9',   'https://images.unsplash.com/photo-1748885107720-a9b45e5d9b92?w=1170&h=2532&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1748885107720-a9b45e5d9b92?w=296&h=640&fit=crop&q=80&auto=format',    1170,2532,true,false,ARRAY['gradient','colorful','abstract','blur'],           'Alexander X.',        ARRAY['#818CF8','#F472B6','#22D3EE'],            now()),
+('Spectrum Orb',     'spectrum-orb-b1c8',     'https://images.unsplash.com/photo-1759851942096-cf73a51532ba?w=3840&h=2160&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1759851942096-cf73a51532ba?w=640&h=360&fit=crop&q=80&auto=format',   3840,2160,true,false,ARRAY['gradient','abstract','3d','geometric'],            'Steve A Johnson',     ARRAY['#818CF8','#7C3AED','#22D3EE'],            now()),
+('Violet Depths',    'violet-depths-f3e5',    'https://images.unsplash.com/photo-1663970206579-c157cba7edda?w=2880&h=1800&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1663970206579-c157cba7edda?w=640&h=400&fit=crop&q=80&auto=format',   2880,1800,true,false,ARRAY['gradient','dark','purple','blue'],                 'BoliviaInteligente',  ARRAY['#1E1B4B','#4338CA','#7C3AED'],            now()),
+('Cosmic Purple',    'cosmic-purple-a8d1',    'https://images.unsplash.com/photo-1673526759327-54f1f5b27322?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1673526759327-54f1f5b27322?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['gradient','purple','dark','abstract'],              'Gradient Wallpapers', ARRAY['#7C3AED','#0B0B0E','#818CF8'],            now()),
+('Indigo Abyss',     'indigo-abyss-c5f2',     'https://images.unsplash.com/photo-1771814536262-3c1320c8e9ce?w=1080&h=2400&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1771814536262-3c1320c8e9ce?w=270&h=600&fit=crop&q=80&auto=format',    1080,2400,true,false,ARRAY['gradient','dark','blue','purple'],                 'Antonius Harel',      ARRAY['#1E1B4B','#818CF8','#22D3EE'],            now()),
+
+-- MINIMAL (6)
+('Geo Minimal',      'geo-minimal-b3a7',      'https://images.unsplash.com/photo-1751738567808-6affa516fedc?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1751738567808-6affa516fedc?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['minimal','geometric','abstract','3d'],              'Pawel Czerwinski',    ARRAY['#EDEDF2','#8686A0','#F0F0F8'],            now()),
+('Marble Grid',      'marble-grid-e6c4',      'https://images.unsplash.com/photo-1743102776040-3e36a6e6af3f?w=3840&h=2160&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1743102776040-3e36a6e6af3f?w=640&h=360&fit=crop&q=80&auto=format',   3840,2160,true,false,ARRAY['minimal','geometric','texture','abstract'],        'Pawel Czerwinski',    ARRAY['#F0F0F8','#DCDCEC','#8686A0'],            now()),
+('White Folds',      'white-folds-d1b9',      'https://images.unsplash.com/photo-1741680581152-8ac5fb23ef47?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1741680581152-8ac5fb23ef47?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['minimal','white','folds','clean','texture'],        'Pawel Czerwinski',    ARRAY['#F8F8FC','#E4E4F0','#DCDCEC'],            now()),
+('Silk Lines',       'silk-lines-a2f5',       'https://images.unsplash.com/photo-1741806914386-c60073a0fed3?w=1920&h=1080&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1741806914386-c60073a0fed3?w=640&h=360&fit=crop&q=80&auto=format',   1920,1080,true,false,ARRAY['minimal','white','wavy','lines','clean'],           'Pawel Czerwinski',    ARRAY['#F8F8FC','#EDEDF2','#DCDCEC'],            now()),
+('Monochrome Waves', 'monochrome-waves-c8d3', 'https://images.unsplash.com/photo-1740686004244-e9bc7c75d8e5?w=1170&h=2532&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1740686004244-e9bc7c75d8e5?w=296&h=640&fit=crop&q=80&auto=format',    1170,2532,true,false,ARRAY['minimal','dark','wavy','monochrome','abstract'],   'Pawel Czerwinski',    ARRAY['#0B0B0E','#22222E','#46465A'],            now()),
+('Cubic Noir',       'cubic-noir-f1e7',       'https://images.unsplash.com/photo-1737505598998-693328b57ae3?w=2880&h=1800&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1737505598998-693328b57ae3?w=640&h=400&fit=crop&q=80&auto=format',   2880,1800,true,false,ARRAY['minimal','dark','geometric','blocks','abstract'],   'Ecliptic Graphic',    ARRAY['#0B0B0E','#13131A','#22222E'],            now()),
+
+-- ABSTRACT (2)
+('Rainbow Ribbon',   'rainbow-ribbon-b4a2',   'https://images.unsplash.com/photo-1690382285917-73dfd2a22d07?w=3840&h=2160&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1690382285917-73dfd2a22d07?w=640&h=360&fit=crop&q=80&auto=format',   3840,2160,true,false,ARRAY['abstract','colorful','wavy','gradient','3d'],      'Sebastian Svenson',   ARRAY['#818CF8','#F472B6','#22D3EE','#F59E0B'], now()),
+('Teal Pulse',       'teal-pulse-d6c1',       'https://images.unsplash.com/photo-1758551059627-e891d671e010?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1758551059627-e891d671e010?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['abstract','teal','dark','neon','waves'],            'Mirella Callage',     ARRAY['#22D3EE','#0B0B0E','#059669'],            now()),
+
+-- ARCHITECTURE (3)
+('Iron Symmetry',    'iron-symmetry-f5b3',    'https://images.unsplash.com/photo-1752477296332-4194308c025f?w=2560&h=1440&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1752477296332-4194308c025f?w=640&h=360&fit=crop&q=80&auto=format',   2560,1440,true,false,ARRAY['architecture','dark','abstract','symmetry','urban'],'Mike Hindle',         ARRAY['#0B0B0E','#13131A','#46465A'],            now()),
+('Dark Facade',      'dark-facade-a9e4',      'https://images.unsplash.com/photo-1767716843858-f7d3d6d2da7d?w=1080&h=2400&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1767716843858-f7d3d6d2da7d?w=270&h=600&fit=crop&q=80&auto=format',    1080,2400,true,false,ARRAY['architecture','dark','abstract','symmetry'],         'Mike Hindle',         ARRAY['#0B0B0E','#22222E','#13131A'],            now()),
+('White Corner',     'white-corner-c2d8',     'https://images.unsplash.com/photo-1761600577013-7fc9f5f03f66?w=1920&h=1080&fit=crop&q=90&auto=format','https://images.unsplash.com/photo-1761600577013-7fc9f5f03f66?w=640&h=360&fit=crop&q=80&auto=format',   1920,1080,true,false,ARRAY['architecture','minimal','white','clean','geometric'], 'Sebastian Schuster',  ARRAY['#F8F8FC','#EDEDF2','#8686A0'],            now());
+
+-- wallpaper_categories
+INSERT INTO public.wallpaper_categories (wallpaper_id, category_id)
+SELECT w.id, c.id FROM public.wallpapers w JOIN public.categories c ON (
+  (c.slug='dark'         AND w.slug IN ('emerald-void-f8a2','obsidian-ripple-c3e1','shadow-waves-b7d4','neon-wire-a5c2','carbon-curves-d9f1','chrome-flow-e2b8','midnight-streak-f4a6'))
+  OR (c.slug='gradient'  AND w.slug IN ('burnt-horizon-c1d3','solar-wash-a7b5','prismatic-blur-d2e9','spectrum-orb-b1c8','violet-depths-f3e5','cosmic-purple-a8d1','indigo-abyss-c5f2'))
+  OR (c.slug='minimal'   AND w.slug IN ('geo-minimal-b3a7','marble-grid-e6c4','white-folds-d1b9','silk-lines-a2f5','monochrome-waves-c8d3','cubic-noir-f1e7'))
+  OR (c.slug='abstract'  AND w.slug IN ('rainbow-ribbon-b4a2','teal-pulse-d6c1'))
+  OR (c.slug='architecture' AND w.slug IN ('iron-symmetry-f5b3','dark-facade-a9e4','white-corner-c2d8'))
+);
+
+-- wallpaper_moods
+INSERT INTO public.wallpaper_moods (wallpaper_id, mood_id)
+SELECT w.id, m.id FROM public.wallpapers w JOIN public.moods m ON (
+  (m.slug='focus'  AND w.slug IN ('geo-minimal-b3a7','marble-grid-e6c4','white-folds-d1b9','silk-lines-a2f5','white-corner-c2d8','cubic-noir-f1e7','monochrome-waves-c8d3'))
+  OR (m.slug='calm'  AND w.slug IN ('burnt-horizon-c1d3','solar-wash-a7b5','cosmic-purple-a8d1','indigo-abyss-c5f2','shadow-waves-b7d4','obsidian-ripple-c3e1','carbon-curves-d9f1'))
+  OR (m.slug='bold'  AND w.slug IN ('emerald-void-f8a2','neon-wire-a5c2','chrome-flow-e2b8','midnight-streak-f4a6','teal-pulse-d6c1','iron-symmetry-f5b3','dark-facade-a9e4'))
+  OR (m.slug='dreamy' AND w.slug IN ('prismatic-blur-d2e9','spectrum-orb-b1c8','violet-depths-f3e5','rainbow-ribbon-b4a2','burnt-horizon-c1d3'))
+);
+
+-- wallpaper_collections
+INSERT INTO public.wallpaper_collections (wallpaper_id, collection_id, sort_order)
+SELECT w.id, c.id,
+  ROW_NUMBER() OVER (PARTITION BY c.slug ORDER BY w.title) - 1
+FROM public.wallpapers w JOIN public.collections c ON (
+  (c.slug='dark-mode-essentials' AND w.slug IN ('emerald-void-f8a2','neon-wire-a5c2','chrome-flow-e2b8','midnight-streak-f4a6','cosmic-purple-a8d1','indigo-abyss-c5f2','cubic-noir-f1e7','teal-pulse-d6c1','iron-symmetry-f5b3'))
+  OR (c.slug='geometric-order'   AND w.slug IN ('geo-minimal-b3a7','marble-grid-e6c4','spectrum-orb-b1c8','monochrome-waves-c8d3','dark-facade-a9e4'))
+  OR (c.slug='natural-light'     AND w.slug IN ('white-folds-d1b9','silk-lines-a2f5','white-corner-c2d8','rainbow-ribbon-b4a2','burnt-horizon-c1d3','solar-wash-a7b5'))
+);

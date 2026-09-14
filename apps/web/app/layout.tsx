@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import { Nav } from '@/components/nav';
 import './globals.css';
 
 const inter = Inter({
@@ -40,7 +41,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body>{children}</body>
+      <body>
+        <Nav />
+        <div className="pt-14">{children}</div>
+      </body>
     </html>
   );
 }

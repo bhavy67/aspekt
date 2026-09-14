@@ -79,8 +79,7 @@ const styles = StyleSheet.create({
   card: { borderRadius: 16, overflow: 'hidden', aspectRatio: 16 / 9, justifyContent: 'flex-end' },
   cardOverlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(11,11,14,0.60)',
-    backgroundImage: 'linear-gradient(to top, rgba(11,11,14,0.9), transparent)',
+    backgroundColor: 'rgba(11,11,14,0.65)',
   },
   cardContent: { padding: 16, position: 'relative' },
   cardName: { color: '#EDEDF2', fontSize: 16, fontWeight: '700' },

@@ -1,0 +1,40 @@
+{
+  "name": "aspekt",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=@aspekt/web",
+    "dev:mobile": "turbo dev --filter=@aspekt/mobile",
+    "build": "turbo build",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "type-check": "turbo type-check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "eslint": "^10.10.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
+    "prettier": "^3.9.6",
+    "turbo": "^2.10.12",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.70.0"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx,mjs,cjs}": [
+      "prettier --write",
+      "eslint --fix --max-warnings=0 --no-warn-ignored"
+    ],
+    "**/*.{json,md,yaml,yml,css}": [
+      "prettier --write"
+    ]
+  },
+  "packageManager": "pnpm@11.24.0"
+}

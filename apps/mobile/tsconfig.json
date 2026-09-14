@@ -1,0 +1,10 @@
+{
+  "extends": ["expo/tsconfig.base", "@aspekt/config/typescript/expo.json"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules"]
+}

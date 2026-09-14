@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "ASPEKT Expo",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "jsx": "react-native",
+    "noEmit": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["esnext"],
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true
+  }
+}

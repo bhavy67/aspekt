@@ -1,0 +1,25 @@
+{
+  "name": "@aspekt/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared Supabase query functions and API service layer for the ASPEKT platform",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@aspekt/types": "workspace:*",
+    "@supabase/supabase-js": "^2.116.0"
+  },
+  "devDependencies": {
+    "@aspekt/config": "workspace:*",
+    "typescript": "~5.9.3"
+  }
+}

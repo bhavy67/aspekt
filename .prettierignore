@@ -1,0 +1,11 @@
+node_modules/
+dist/
+build/
+.next/
+.expo/
+.turbo/
+coverage/
+pnpm-lock.yaml
+*.lock
+supabase/.temp/
+**/next-env.d.ts

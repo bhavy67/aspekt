@@ -1,0 +1,8 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# Build script allowlist — managed by pnpm security policy
+# unrs-resolver: native module used by ESLint's configuration resolver
+allowBuilds:
+  unrs-resolver: true

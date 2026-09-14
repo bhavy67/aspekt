@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { WallpaperCard } from '@/components/wallpaper-card';
 import { getWallpaper, getWallpapers } from '@/lib/queries';
 import { DownloadButton } from './download-button';
+import { ScrollReset } from './scroll-reset';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -38,6 +39,7 @@ export default async function WallpaperPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-background">
+      <ScrollReset />
       <div className="mx-auto max-w-[1440px] px-6 py-10">
         <div className="grid gap-10 lg:grid-cols-[380px_1fr]">
           {/* Portrait wallpaper preview — phone-proportioned column */}

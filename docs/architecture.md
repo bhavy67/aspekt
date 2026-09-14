@@ -43,6 +43,8 @@ aspekt/
 
 - ADR-001: Monorepo with Turborepo + pnpm
 - ADR-002: Supabase as backend platform
+- ADR-003: iOS wallpaper apply — PHPhotoLibrary + in-app guide (no public API)
+- ADR-004: Navigation architecture — 4-tab mobile, top-nav web, adaptive layout
 
 ## Phase Status
 
@@ -50,7 +52,7 @@ aspekt/
 | ------------------------------ | ----------- |
 | 0 — Product Understanding      | ✅ Complete |
 | 1 — Project Foundation         | ✅ Complete |
-| 2 — Product & UX Architecture  | Pending     |
+| 2 — Product & UX Architecture  | ✅ Complete |
 | 3 — Branding & Visual Identity | Pending     |
 | 4 — UI Foundation              | Pending     |
 | 5 — Core Wallpaper Experience  | Pending     |

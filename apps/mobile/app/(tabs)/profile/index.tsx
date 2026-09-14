@@ -16,8 +16,8 @@ const PREVIEW_FEATURES = [
 ];
 
 const MENU_ITEMS = [
-  { icon: 'settings-outline' as const, label: 'Settings', route: '/settings' },
-  { icon: 'information-circle-outline' as const, label: 'About', route: '/about' },
+  { icon: 'settings-outline' as const, label: 'Settings', route: '/(tabs)/profile/settings' },
+  { icon: 'information-circle-outline' as const, label: 'About', route: '/(tabs)/profile/about' },
 ];
 
 export default function ProfileScreen() {

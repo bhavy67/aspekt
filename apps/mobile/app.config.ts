@@ -68,8 +68,16 @@ const config: ExpoConfig = {
     [
       'expo-splash-screen',
       {
-        // Dark background matches Obsidian bg token. Splash image: export app-icon.svg at 200×200px.
         backgroundColor: '#0B0B0E',
+      },
+    ],
+    [
+      'expo-media-library',
+      {
+        photosPermission:
+          'ASPEKT saves your wallpaper to Photos so you can set it in iOS Settings.',
+        savePhotosPermission: 'ASPEKT saves your wallpaper to your photo library.',
+        isAccessMediaLocationEnabled: false,
       },
     ],
   ],

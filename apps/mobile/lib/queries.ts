@@ -43,9 +43,19 @@ export async function getCategories(): Promise<Category[]> {
   return (data ?? []) as Category[];
 }
 
+export async function getCategory(slug: string): Promise<Category | null> {
+  const { data } = await supabase.from('categories').select('*').eq('slug', slug).single();
+  return (data ?? null) as Category | null;
+}
+
 export async function getMoods(): Promise<Mood[]> {
   const { data } = await supabase.from('moods').select('*').order('sort_order');
   return (data ?? []) as Mood[];
+}
+
+export async function getMood(slug: string): Promise<Mood | null> {
+  const { data } = await supabase.from('moods').select('*').eq('slug', slug).single();
+  return (data ?? null) as Mood | null;
 }
 
 export async function getCollections(): Promise<Collection[]> {
@@ -108,5 +118,16 @@ export async function getWallpapersByMood(slug: string): Promise<Wallpaper[]> {
       links.map((l: { wallpaper_id: string }) => l.wallpaper_id),
     )
     .order('published_at', { ascending: false });
+  return (data ?? []) as Wallpaper[];
+}
+
+export async function searchWallpapers(query: string): Promise<Wallpaper[]> {
+  if (!query.trim()) return [];
+  const { data } = await supabase
+    .from('wallpapers')
+    .select('*')
+    .textSearch('fts', query, { type: 'websearch' })
+    .order('published_at', { ascending: false })
+    .limit(40);
   return (data ?? []) as Wallpaper[];
 }

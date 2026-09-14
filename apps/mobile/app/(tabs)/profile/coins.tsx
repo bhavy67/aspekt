@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { AD_DAILY_LIMIT, COIN_REWARDS } from '@aspekt/core';
+import { AD_DAILY_LIMIT, COIN_PACKS, COIN_REWARDS } from '@aspekt/core';
 import { Screen } from '../../../components/screen';
 import { darkTheme, lightTheme } from '../../../lib/theme';
 import { useAuth } from '../../../context/auth-context';
@@ -22,6 +22,14 @@ import {
   hasClaimedToday,
 } from '../../../lib/coins';
 import { showRewardedAd } from '../../../lib/ads';
+import {
+  getOffering,
+  purchaseCoinPack,
+  restorePurchases,
+  type PurchaseResult,
+} from '../../../lib/purchases';
+import { supabase } from '../../../lib/supabase';
+import type { PurchasesPackage } from 'react-native-purchases';
 
 const EARN_ACTIONS = [
   {
@@ -61,6 +69,11 @@ export default function CoinsScreen() {
   const [adsWatched, setAdsWatched] = useState(0);
   const [adLoading, setAdLoading] = useState(false);
   const [adError, setAdError] = useState('');
+  const [packages, setPackages] = useState<PurchasesPackage[]>([]);
+  const [packagesLoading, setPackagesLoading] = useState(true);
+  const [purchasingId, setPurchasingId] = useState<string | null>(null);
+  const [purchaseError, setPurchaseError] = useState('');
+  const [restoring, setRestoring] = useState(false);
 
   const fg = theme.colors.foreground;
   const muted = theme.colors.muted;
@@ -84,6 +97,13 @@ export default function CoinsScreen() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    setPackagesLoading(true);
+    getOffering()
+      .then(setPackages)
+      .finally(() => setPackagesLoading(false));
+  }, []);
 
   async function handleClaim() {
     if (!user || claiming || claimed) return;
@@ -122,6 +142,39 @@ export default function CoinsScreen() {
       setAdError('Something went wrong. Try again.');
     } finally {
       setAdLoading(false);
+    }
+  }
+
+  async function handlePurchase(pkg: PurchasesPackage, coins: number) {
+    if (!user || purchasingId) return;
+    setPurchasingId(pkg.product.identifier);
+    setPurchaseError('');
+    const result: PurchaseResult = await purchaseCoinPack(pkg);
+    if (result.status === 'success') {
+      const { data, error } = await supabase.rpc('record_iap_purchase', {
+        p_user_id: user.id,
+        p_transaction_id: result.transactionId,
+        p_product_id: pkg.product.identifier,
+        p_coins: coins,
+      });
+      if (!error) setBalance(data as number);
+      else setPurchaseError('Purchase recorded but balance update failed. Contact support.');
+    } else if (result.status === 'error') {
+      setPurchaseError(result.message);
+    }
+    setPurchasingId(null);
+  }
+
+  async function handleRestore() {
+    if (restoring) return;
+    setRestoring(true);
+    setPurchaseError('');
+    try {
+      await restorePurchases();
+    } catch {
+      setPurchaseError('Could not restore purchases. Try again.');
+    } finally {
+      setRestoring(false);
     }
   }
 
@@ -260,6 +313,64 @@ export default function CoinsScreen() {
             <Text style={styles.coinPillText}>10</Text>
           </View>
         </View>
+
+        {/* Buy Coins */}
+        <Text style={[styles.section, { color: muted, marginTop: 24 }]}>BUY COINS</Text>
+        {packagesLoading ? (
+          <ActivityIndicator color="#818CF8" style={{ marginVertical: 16 }} />
+        ) : (
+          <>
+            <View style={styles.packsGrid}>
+              {COIN_PACKS.map((pack) => {
+                const rcPkg = packages.find((p) => p.product.identifier === pack.productId);
+                const price = rcPkg?.product.priceString ?? pack.fallbackPrice;
+                const isMega = pack.label === 'Mega';
+                const isPurchasing = purchasingId === pack.productId;
+                return (
+                  <Pressable
+                    key={pack.productId}
+                    style={[
+                      styles.packCard,
+                      { backgroundColor: surface, borderColor: isMega ? '#818CF8' : border },
+                    ]}
+                    onPress={() => rcPkg && handlePurchase(rcPkg, pack.coins)}
+                    disabled={!!purchasingId || !rcPkg}
+                  >
+                    {isMega && (
+                      <View style={styles.bestValueBadge}>
+                        <Text style={styles.bestValueText}>Best Value</Text>
+                      </View>
+                    )}
+                    <Text style={[styles.packLabel, { color: fg }]}>{pack.label}</Text>
+                    <Text style={styles.packCoins}>{pack.coins}</Text>
+                    <Text style={[styles.packCoinsLabel, { color: muted }]}>coins</Text>
+                    <View style={[styles.packPriceRow]}>
+                      {isPurchasing ? (
+                        <ActivityIndicator size="small" color="#818CF8" />
+                      ) : (
+                        <Text style={[styles.packPrice, !rcPkg && { color: muted }]}>
+                          {rcPkg ? price : 'Coming soon'}
+                        </Text>
+                      )}
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </View>
+            {purchaseError ? (
+              <Text style={[styles.claimError, { marginTop: 8 }]}>{purchaseError}</Text>
+            ) : null}
+            <Pressable
+              style={[styles.restoreBtn, { borderColor: border }]}
+              onPress={handleRestore}
+              disabled={restoring}
+            >
+              <Text style={[styles.restoreText, { color: muted }]}>
+                {restoring ? 'Restoring…' : 'Restore Purchases'}
+              </Text>
+            </Pressable>
+          </>
+        )}
       </ScrollView>
     </Screen>
   );
@@ -338,4 +449,42 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   coinPillText: { color: '#0B0B0E', fontSize: 12, fontWeight: '700' },
+  packsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  packCard: {
+    flex: 1,
+    minWidth: '45%',
+    borderRadius: 16,
+    borderWidth: 1,
+    padding: 16,
+    alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  bestValueBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: '#818CF8',
+    borderBottomLeftRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  bestValueText: { color: '#0B0B0E', fontSize: 9, fontWeight: '800', letterSpacing: 0.5 },
+  packLabel: { fontSize: 12, fontWeight: '600', marginBottom: 8, marginTop: 4 },
+  packCoins: { fontSize: 32, fontWeight: '800', color: '#818CF8', letterSpacing: -1 },
+  packCoinsLabel: { fontSize: 11, marginTop: 2, marginBottom: 12 },
+  packPriceRow: { height: 24, justifyContent: 'center', alignItems: 'center' },
+  packPrice: { fontSize: 14, fontWeight: '700', color: '#818CF8' },
+  restoreBtn: {
+    marginTop: 16,
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 14,
+    alignItems: 'center',
+  },
+  restoreText: { fontSize: 13 },
 });

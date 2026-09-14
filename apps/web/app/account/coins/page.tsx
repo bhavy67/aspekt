@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { COIN_PACKS } from '@aspekt/core';
 import { createSupabaseBrowserClient } from '@/lib/supabase-browser';
 
 const supabase = createSupabaseBrowserClient();
@@ -142,6 +143,30 @@ export default function CoinsPage() {
           detail page.
         </p>
       </div>
+
+      {/* Coin packs */}
+      <h2 className="mb-3 mt-8 text-xs font-600 uppercase tracking-widest text-muted">Buy Coins</h2>
+      <div className="grid grid-cols-2 gap-3">
+        {COIN_PACKS.map((pack) => (
+          <div
+            key={pack.productId}
+            className={`relative overflow-hidden rounded-xl border p-4 text-center ${pack.label === 'Mega' ? 'border-accent' : 'border-border'} bg-surface`}
+          >
+            {pack.label === 'Mega' && (
+              <span className="absolute right-0 top-0 rounded-bl-lg bg-accent-gradient px-2 py-0.5 text-[9px] font-800 uppercase tracking-wider text-[#0B0B0E]">
+                Best Value
+              </span>
+            )}
+            <p className="text-xs font-600 text-muted">{pack.label}</p>
+            <p className="my-1 text-2xl font-800 text-accent">{pack.coins}</p>
+            <p className="mb-2 text-[10px] text-subtle">coins</p>
+            <p className="text-sm font-700 text-foreground">{pack.fallbackPrice}</p>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-center text-xs text-subtle">
+        Coin packs are purchased in the ASPEKT mobile app.
+      </p>
     </main>
   );
 }

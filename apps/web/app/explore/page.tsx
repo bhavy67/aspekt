@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getCategories, getMoods } from '@/lib/queries';
@@ -15,61 +16,81 @@ export default async function ExplorePage() {
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-[1440px] px-6 py-12">
-        <h1 className="mb-2 text-2xl font-bold text-foreground">Explore</h1>
-        <p className="mb-12 text-sm text-muted">
-          Discover the perfect wallpaper by category or feeling.
-        </p>
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-3xl font-bold text-foreground">Explore</h1>
+          <p className="mt-2 text-base text-muted">Find the right wallpaper for how you feel.</p>
+        </div>
 
-        {/* Categories */}
-        <section className="mb-16">
-          <h2 className="mb-5 text-base font-semibold text-foreground">Categories</h2>
-          <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
-            {categories.map((cat) => (
-              <Link
-                key={cat.id}
-                href={`/category/${cat.slug}`}
-                className="group relative flex aspect-square items-end overflow-hidden rounded-xl bg-surface p-3 transition-shadow hover:shadow-card-hover"
-              >
-                {cat.cover_url && (
-                  <div
-                    className="absolute inset-0 bg-cover bg-center opacity-50 transition-opacity duration-200 group-hover:opacity-70"
-                    style={{ backgroundImage: `url(${cat.cover_url})` }}
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
-                <span className="relative text-sm font-semibold text-foreground drop-shadow">
-                  {cat.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* Categories — portrait cards matching wallpaper shape */}
+        {categories.length > 0 && (
+          <section className="mb-16">
+            <h2 className="mb-5 text-xs font-semibold uppercase tracking-widest text-muted">
+              Categories
+            </h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+              {categories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/category/${cat.slug}`}
+                  className="group relative overflow-hidden rounded-2xl bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+                  style={{ aspectRatio: '3/4' }}
+                >
+                  {cat.cover_url && (
+                    <Image
+                      src={cat.cover_url}
+                      alt={cat.name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="font-bold text-white">{cat.name}</p>
+                    {cat.description && (
+                      <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-white/55">
+                        {cat.description}
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* Moods */}
-        <section>
-          <h2 className="mb-5 text-base font-semibold text-foreground">Moods</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {moods.map((m) => (
-              <Link
-                key={m.id}
-                href={`/mood/${m.slug}`}
-                className="group relative flex aspect-video items-end overflow-hidden rounded-xl bg-surface p-4 transition-shadow hover:shadow-card-hover"
-              >
-                {m.cover_url && (
-                  <div
-                    className="absolute inset-0 bg-cover bg-center opacity-50 transition-opacity duration-200 group-hover:opacity-70"
-                    style={{ backgroundImage: `url(${m.cover_url})` }}
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                <div className="relative">
-                  <p className="text-base font-bold text-foreground">{m.name}</p>
-                  {m.description && <p className="mt-0.5 text-xs text-muted">{m.description}</p>}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* Moods — wide landscape cards with left-to-right gradient */}
+        {moods.length > 0 && (
+          <section>
+            <h2 className="mb-5 text-xs font-semibold uppercase tracking-widest text-muted">
+              Moods
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {moods.map((m) => (
+                <Link
+                  key={m.id}
+                  href={`/mood/${m.slug}`}
+                  className="group relative overflow-hidden rounded-2xl bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+                  style={{ aspectRatio: '4/3' }}
+                >
+                  {m.cover_url && (
+                    <Image
+                      src={m.cover_url}
+                      alt={m.name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-5">
+                    <p className="text-lg font-bold text-white">{m.name}</p>
+                    {m.description && <p className="mt-1 text-xs text-white/55">{m.description}</p>}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </main>
   );

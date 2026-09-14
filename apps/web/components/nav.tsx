@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Logo } from './logo';
+import { ThemeToggle } from './theme-toggle';
 
 const NAV_LINKS = [
   { href: '/browse', label: 'Browse' },
@@ -53,10 +54,12 @@ export function Nav() {
         <div className="flex items-center gap-2">
           <Link
             href="/search"
-            className="hidden sm:flex h-7 items-center rounded-md border border-border-strong bg-raised px-3 text-[11px] font-semibold uppercase tracking-widest text-muted transition-colors duration-150 hover:text-foreground"
+            className="hidden sm:flex h-7 items-center rounded-md border border-border bg-raised px-3 text-[11px] font-semibold uppercase tracking-widest text-muted transition-colors duration-150 hover:text-foreground"
           >
             Search
           </Link>
+
+          <ThemeToggle />
 
           <Link
             href="/download"

@@ -1,20 +1,15 @@
 @import 'tailwindcss';
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   ASPEKT — Obsidian Design System
-   Token values mirror packages/ui/src/tokens/colors.ts
-   Dark-first. System-adaptive via prefers-color-scheme.
+   ASPEKT Design System v2 — Warm Studio
+   Light default: warm ivory, cards breathe on the background
+   Dark: deep slate (not pure black), wallpapers have depth
    Single gradient accent: #818CF8 (indigo) → #22D3EE (cyan)
 ───────────────────────────────────────────────────────────────────────────── */
 
-/* ── Register tokens with Tailwind v4 ──────────────────────────────────────
-   @theme inline: tokens reference CSS custom properties defined below,
-   so utilities respond to light/dark mode automatically.               */
 @theme inline {
-  /* Font */
   --font-sans: var(--font-sans), 'Inter', system-ui, sans-serif;
 
-  /* Colour tokens → generate bg-*, text-*, border-* utilities */
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-raised: var(--raised);
@@ -26,7 +21,6 @@
   --color-accent: var(--accent);
   --color-success: var(--success);
 
-  /* Border radius tokens → generate rounded-* utilities */
   --radius-xs: 3px;
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -37,45 +31,79 @@
   --radius-pill: 9999px;
 }
 
-/* ── Light mode (default) ─────────────────────────────────────────────────── */
+/* ── Light mode (default) — warm ivory studio ──────────────────────────────
+   Warm off-white background makes every wallpaper colour pop.
+   Cards are pure white to contrast the background — no more flat grey.    */
 :root {
-  --background: #f8f8fc;
-  --surface: #f0f0f8;
-  --raised: #e4e4f0;
-  --border: #dcdcec;
-  --border-strong: #c4c4dc;
-  --foreground: #0b0b14;
-  --muted: #565672;
-  --subtle: #9898b4;
-  --accent: #6366f1;
-  --accent-dim: rgba(99, 102, 241, 0.1);
+  --background: #f6f5f1;
+  --surface: #ffffff;
+  --raised: #edeae3;
+  --border: #e0ddd6;
+  --border-strong: #c8c4bb;
+  --foreground: #1a1915;
+  --muted: #6e6860;
+  --subtle: #a09890;
+  --accent: #5b5ef4;
+  --accent-dim: rgba(91, 94, 244, 0.08);
   --success: #059669;
-  --glow: rgba(99, 102, 241, 0.25);
-  --glass: rgba(240, 240, 248, 0.88);
-  --overlay: rgba(11, 11, 20, 0.55);
+  --glow: rgba(91, 94, 244, 0.2);
+  --glass: rgba(246, 245, 241, 0.92);
+  --overlay: rgba(26, 25, 21, 0.62);
+
+  /* Card shadows — theme-aware */
+  --shadow-card: 0 1px 4px rgba(26, 25, 21, 0.06), 0 0 0 1px rgba(26, 25, 21, 0.05);
+  --shadow-card-hover: 0 8px 28px rgba(26, 25, 21, 0.12), 0 0 0 1px rgba(91, 94, 244, 0.2);
+  --shadow-dropdown: 0 8px 32px rgba(26, 25, 21, 0.14), 0 0 0 1px rgba(26, 25, 21, 0.06);
 }
 
-/* ── Dark mode ────────────────────────────────────────────────────────────── */
+/* ── Dark mode — deep slate, NOT pure black ────────────────────────────────
+   #0F0F12 instead of #0B0B0E: the tiny blue-grey tint gives dark wallpapers
+   something to sit against. Pure black = wallpapers disappear.            */
+.dark {
+  --background: #0f0f12;
+  --surface: #18181c;
+  --raised: #222228;
+  --border: #2a2a32;
+  --border-strong: #38383f;
+  --foreground: #eeeef2;
+  --muted: #8888a0;
+  --subtle: #505060;
+  --accent: #818cf8;
+  --accent-dim: rgba(129, 140, 248, 0.12);
+  --success: #34d399;
+  --glow: rgba(129, 140, 248, 0.4);
+  --glass: rgba(15, 15, 18, 0.9);
+  --overlay: rgba(0, 0, 0, 0.6);
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(129, 140, 248, 0.25);
+  --shadow-dropdown: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* ── System preference fallback (when no manual theme is set) ─────────────── */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b0b0e;
-    --surface: #13131a;
-    --raised: #1c1c26;
-    --border: #22222e;
-    --border-strong: #2e2e3e;
-    --foreground: #ededf2;
-    --muted: #8686a0;
-    --subtle: #46465a;
+  :root:not(.light) {
+    --background: #0f0f12;
+    --surface: #18181c;
+    --raised: #222228;
+    --border: #2a2a32;
+    --border-strong: #38383f;
+    --foreground: #eeeef2;
+    --muted: #8888a0;
+    --subtle: #505060;
     --accent: #818cf8;
     --accent-dim: rgba(129, 140, 248, 0.12);
     --success: #34d399;
     --glow: rgba(129, 140, 248, 0.4);
-    --glass: rgba(19, 19, 26, 0.88);
-    --overlay: rgba(11, 11, 14, 0.5);
+    --glass: rgba(15, 15, 18, 0.9);
+    --overlay: rgba(0, 0, 0, 0.6);
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 12px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(129, 140, 248, 0.25);
+    --shadow-dropdown: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 }
 
-/* ── Base styles ──────────────────────────────────────────────────────────── */
+/* ── Base styles ────────────────────────────────────────────────────────────── */
 @layer base {
   html {
     font-family: var(--font-sans);
@@ -91,14 +119,12 @@
   }
 }
 
-/* ── Accent gradient utilities ────────────────────────────────────────────── */
+/* ── Accent gradient utilities ──────────────────────────────────────────────── */
 @layer utilities {
-  /* Background gradient — primary CTA, logo, brand moments */
   .bg-accent-gradient {
     background: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
   }
 
-  /* Text gradient — hero headings, marketing copy */
   .text-accent-gradient {
     background: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
     -webkit-background-clip: text;
@@ -106,43 +132,46 @@
     background-clip: text;
   }
 
-  /* Glassmorphism surface — sticky nav, modals */
+  /* Glassmorphism — sticky nav */
   .bg-glass {
     background: var(--glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
   }
 
-  /* Overlay — card gradient overlays on wallpaper images */
+  /* Card overlays */
   .bg-card-overlay {
-    background: linear-gradient(to top, var(--overlay) 0%, transparent 55%);
+    background: linear-gradient(to top, var(--overlay) 0%, transparent 60%);
   }
 
-  /* Accent dim — chip/badge tinted backgrounds */
   .bg-accent-dim {
     background: var(--accent-dim);
   }
 
-  /* Glow shadows — CTA button states */
+  /* Theme-aware card shadows */
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-card-hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+  .shadow-dropdown {
+    box-shadow: var(--shadow-dropdown);
+  }
+
+  /* Glow effects */
   .shadow-glow-sm {
-    box-shadow: 0 0 16px rgba(129, 140, 248, 0.25);
+    box-shadow: 0 0 16px var(--glow);
   }
   .shadow-glow {
-    box-shadow: 0 4px 24px rgba(129, 140, 248, 0.35);
+    box-shadow: 0 4px 24px var(--glow);
   }
   .shadow-glow-lg {
-    box-shadow: 0 8px 40px rgba(129, 140, 248, 0.45);
+    box-shadow: 0 8px 40px var(--glow);
   }
   .shadow-glow-cta {
     box-shadow:
-      0 4px 28px rgba(129, 140, 248, 0.45),
-      0 0 0 1px rgba(129, 140, 248, 0.3);
-  }
-
-  /* Card hover — elevation + accent ring */
-  .shadow-card-hover {
-    box-shadow:
-      0 12px 40px rgba(11, 11, 14, 0.35),
+      0 4px 28px var(--glow),
       0 0 0 1px rgba(129, 140, 248, 0.3);
   }
 }

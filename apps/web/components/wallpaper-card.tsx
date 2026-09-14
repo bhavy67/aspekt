@@ -8,37 +8,42 @@ interface WallpaperCardProps {
 }
 
 export function WallpaperCard({ wallpaper, priority = false }: WallpaperCardProps) {
-  const isPortrait = wallpaper.height > wallpaper.width;
+  const isNew = new Date(wallpaper.published_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   return (
     <Link
       href={`/wallpaper/${wallpaper.slug}`}
-      className="group relative block overflow-hidden rounded-xl bg-surface"
-      style={{ aspectRatio: isPortrait ? '9/16' : '16/9' }}
+      className="group relative block overflow-hidden rounded-[20px] bg-surface shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+      style={{ aspectRatio: '9/16' }}
     >
       <Image
         src={wallpaper.thumbnail_url}
         alt={wallpaper.title}
         fill
-        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1280px) 25vw, (max-width: 1440px) 20vw, 16vw"
-        className="object-cover transition-transform duration-300 group-hover:scale-105"
+        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 20vw"
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
         priority={priority}
       />
 
-      {/* gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+      {/* Permanent subtle vignette at bottom */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-      {/* title + badge on hover */}
-      <div className="absolute inset-x-0 bottom-0 translate-y-1 p-3 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
-        <p className="truncate text-[13px] font-semibold text-foreground">{wallpaper.title}</p>
-        {wallpaper.is_free && (
-          <span
-            className="mt-1 inline-block rounded bg-accent-gradient px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
-            style={{ color: '#0B0B0E' }}
-          >
-            Free
+      {/* New badge */}
+      {isNew && (
+        <div className="absolute left-2.5 top-2.5">
+          <span className="rounded-full bg-accent-gradient px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-[#0B0B0E]">
+            New
           </span>
-        )}
+        </div>
+      )}
+
+      {/* Title pill — always visible */}
+      <div className="absolute inset-x-2.5 bottom-2.5">
+        <div className="rounded-[10px] bg-black/50 px-2.5 py-1.5 backdrop-blur-md">
+          <p className="truncate text-[11px] font-semibold leading-none text-white">
+            {wallpaper.title}
+          </p>
+        </div>
       </div>
     </Link>
   );

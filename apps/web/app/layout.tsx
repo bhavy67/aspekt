@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Nav } from '@/components/nav';
 import { OfflineBanner } from '@/components/offline-banner';
+import { Providers } from './providers';
 import './globals.css';
 
 const inter = Inter({
@@ -13,8 +14,8 @@ const inter = Inter({
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F8F8FC' },
-    { media: '(prefers-color-scheme: dark)', color: '#0B0B0E' },
+    { media: '(prefers-color-scheme: light)', color: '#F6F5F1' },
+    { media: '(prefers-color-scheme: dark)', color: '#0F0F12' },
   ],
 };
 
@@ -41,11 +42,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <body>
-        <Nav />
-        <div className="pt-14">{children}</div>
-        <OfflineBanner />
+        <Providers>
+          <Nav />
+          <div className="pt-14">{children}</div>
+          <OfflineBanner />
+        </Providers>
       </body>
     </html>
   );

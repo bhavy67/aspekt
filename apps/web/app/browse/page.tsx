@@ -12,7 +12,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Browse Wallpapers',
-  description: 'Browse the full ASPEKT wallpaper library. Filter by category or mood.',
+  description: 'Browse the full ASPEKT collection of mobile wallpapers.',
 };
 
 type Props = {
@@ -44,48 +44,78 @@ export default async function BrowsePage({ searchParams }: Props) {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-[1440px] px-6 py-12">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">
-            {activeLabel ? activeLabel : 'Browse'}
-          </h1>
-          <p className="mt-1 text-sm text-muted">{wallpapers.length} wallpapers</p>
+      {/* Sticky filter bar */}
+      <div className="sticky top-14 z-30 border-b border-border bg-glass backdrop-blur-xl">
+        <div className="mx-auto max-w-[1440px] px-6">
+          <div className="flex items-center gap-2 overflow-x-auto py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <Link
+              href="/browse"
+              className={`flex-none rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                !category && !mood && !q
+                  ? 'bg-accent-gradient text-[#0B0B0E] shadow-glow-sm'
+                  : 'bg-raised text-muted hover:text-foreground'
+              }`}
+            >
+              All
+            </Link>
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/browse?category=${cat.slug}`}
+                className={`flex-none rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                  category === cat.slug
+                    ? 'bg-accent-gradient text-[#0B0B0E] shadow-glow-sm'
+                    : 'bg-raised text-muted hover:text-foreground'
+                }`}
+              >
+                {cat.name}
+              </Link>
+            ))}
+            {moods.map((m) => (
+              <Link
+                key={m.id}
+                href={`/browse?mood=${m.slug}`}
+                className={`flex-none rounded-full px-4 py-1.5 text-xs font-semibold transition-all ${
+                  mood === m.slug
+                    ? 'bg-accent-gradient text-[#0B0B0E] shadow-glow-sm'
+                    : 'bg-raised text-muted hover:text-foreground'
+                }`}
+              >
+                {m.name}
+              </Link>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* Filter chips */}
-        <div className="mb-8 flex flex-wrap gap-2">
-          <Link
-            href="/browse"
-            className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${!category && !mood && !q ? 'bg-accent-gradient text-[#0B0B0E]' : 'bg-raised text-muted hover:text-foreground'}`}
-          >
-            All
-          </Link>
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/browse?category=${cat.slug}`}
-              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${category === cat.slug ? 'bg-accent-gradient text-[#0B0B0E]' : 'bg-raised text-muted hover:text-foreground'}`}
-            >
-              {cat.name}
-            </Link>
-          ))}
-          {moods.map((m) => (
-            <Link
-              key={m.id}
-              href={`/browse?mood=${m.slug}`}
-              className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${mood === m.slug ? 'bg-accent-gradient text-[#0B0B0E]' : 'bg-raised text-muted hover:text-foreground'}`}
-            >
-              {m.name}
-            </Link>
-          ))}
+      <div className="mx-auto max-w-[1440px] px-6 py-10">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-foreground">{activeLabel ?? 'All wallpapers'}</h1>
+          <p className="mt-1 text-sm text-muted">
+            {wallpapers.length} {wallpapers.length === 1 ? 'wallpaper' : 'wallpapers'}
+            {!activeLabel && ' · mobile only · portrait'}
+          </p>
         </div>
 
         {wallpapers.length === 0 ? (
-          <p className="py-24 text-center text-muted">No wallpapers found.</p>
+          <div className="flex flex-col items-center py-32 text-center">
+            <p className="text-4xl">🔍</p>
+            <p className="mt-4 text-base font-semibold text-foreground">Nothing here yet</p>
+            <p className="mt-1 text-sm text-muted">
+              Try a different category or check back tomorrow.
+            </p>
+            <Link
+              href="/browse"
+              className="mt-6 rounded-full bg-raised px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-border"
+            >
+              Clear filter
+            </Link>
+          </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
             {wallpapers.map((w, i) => (
-              <WallpaperCard key={w.id} wallpaper={w} priority={i < 4} />
+              <WallpaperCard key={w.id} wallpaper={w} priority={i < 6} />
             ))}
           </div>
         )}

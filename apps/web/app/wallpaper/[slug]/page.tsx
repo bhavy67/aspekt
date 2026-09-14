@@ -6,6 +6,7 @@ import { Button } from '@/components/button';
 import { Chip } from '@/components/chip';
 import { WallpaperCard } from '@/components/wallpaper-card';
 import { getWallpaper, getWallpapers } from '@/lib/queries';
+import { DownloadButton } from './download-button';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -81,16 +82,13 @@ export default async function WallpaperPage({ params }: Props) {
             </div>
 
             {/* Download */}
-            <a
-              href={wallpaper.image_url}
-              download={`${wallpaper.slug}.jpg`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Button variant="primary" size="lg" className="w-full">
-                Download Free
-              </Button>
-            </a>
+            <DownloadButton
+              wallpaperId={wallpaper.id}
+              wallpaperSlug={wallpaper.slug}
+              imageUrl={wallpaper.image_url}
+              isPremium={wallpaper.is_premium}
+              coinCost={wallpaper.coin_cost}
+            />
 
             {/* App CTA */}
             <Link href="/download">

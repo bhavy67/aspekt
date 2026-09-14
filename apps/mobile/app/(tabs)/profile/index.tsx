@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -5,6 +6,7 @@ import { Screen } from '../../../components/screen';
 import { darkTheme, lightTheme } from '../../../lib/theme';
 import { useAuth } from '../../../context/auth-context';
 import { signOut } from '../../../lib/auth';
+import { getCoinBalance } from '../../../lib/coins';
 
 const LOCKED_FEATURES = [
   {
@@ -12,6 +14,12 @@ const LOCKED_FEATURES = [
     label: 'Favourites',
     desc: 'Save wallpapers you love',
     route: '/(tabs)/profile/favourites',
+  },
+  {
+    icon: 'logo-bitcoin' as const,
+    label: 'Coins',
+    desc: 'Earn and spend coins',
+    route: '/(tabs)/profile/coins',
   },
   { icon: 'time-outline' as const, label: 'History', desc: 'Your recent downloads', route: null },
   {
@@ -32,6 +40,12 @@ export default function ProfileScreen() {
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
   const router = useRouter();
   const { user, loading } = useAuth();
+  const [coinBalance, setCoinBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (user) getCoinBalance(user.id).then(setCoinBalance);
+    else setCoinBalance(null);
+  }, [user]);
 
   const fg = theme.colors.foreground;
   const muted = theme.colors.muted;
@@ -77,6 +91,9 @@ export default function ProfileScreen() {
                 <Text style={[styles.userEmail, { color: muted }]} numberOfLines={1}>
                   {user.email}
                 </Text>
+                {coinBalance !== null && (
+                  <Text style={styles.coinBadge}>⬡ {coinBalance} coins</Text>
+                )}
               </View>
               <Pressable onPress={handleSignOut} hitSlop={8}>
                 <Ionicons name="log-out-outline" size={20} color={muted} />
@@ -188,6 +205,7 @@ const styles = StyleSheet.create({
   userInfo: { flex: 1, gap: 2 },
   userName: { fontSize: 15, fontWeight: '600' },
   userEmail: { fontSize: 12 },
+  coinBadge: { fontSize: 11, color: '#818CF8', fontWeight: '600', marginTop: 3 },
   ctaCard: { borderRadius: 16, borderWidth: 1, padding: 20, marginBottom: 24 },
   ctaTitle: { fontSize: 16, fontWeight: '700', marginBottom: 6 },
   ctaDesc: { fontSize: 13, lineHeight: 18, marginBottom: 16 },

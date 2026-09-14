@@ -16,6 +16,7 @@ import * as IntentLauncher from 'expo-intent-launcher';
 import { darkTheme, lightTheme } from '../../lib/theme';
 import { getWallpaper, logDownload } from '../../lib/queries';
 import { useAuth } from '../../context/auth-context';
+import { awardCoins } from '../../lib/coins';
 
 type Destination = 'lock' | 'home' | 'both';
 type Stage = 'picker' | 'saving' | 'success' | 'error';
@@ -67,6 +68,7 @@ export default function ApplyScreen() {
 
       if (user) {
         logDownload(user.id, wallpaper.id).catch(() => {});
+        awardCoins(user.id, 'apply', wallpaper.id).catch(() => {});
       }
 
       if (Platform.OS === 'android') {

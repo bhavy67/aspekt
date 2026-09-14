@@ -63,6 +63,17 @@ export default async function AccountPage() {
         </form>
       </div>
 
+      {/* Coin balance */}
+      <section className="mb-8 flex items-center justify-between rounded-2xl border border-border bg-surface px-6 py-4">
+        <div>
+          <p className="text-xs font-600 uppercase tracking-widest text-muted">Coins</p>
+          <p className="mt-1 text-2xl font-700 text-foreground">{profile?.coin_balance ?? 0}</p>
+        </div>
+        <Link href="/account/coins" className="text-sm text-muted hover:text-foreground">
+          Earn more →
+        </Link>
+      </section>
+
       {/* Favourites preview */}
       <section>
         <div className="mb-4 flex items-center justify-between">

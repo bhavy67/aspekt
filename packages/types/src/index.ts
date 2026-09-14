@@ -39,6 +39,7 @@ export type Wallpaper = {
   height: number;
   is_free: boolean;
   is_premium: boolean;
+  coin_cost: number;
   tags: string[];
   artist_name: string | null;
   color_palette: string[];
@@ -60,8 +61,18 @@ export type Profile = {
   id: string;
   display_name: string | null;
   avatar_url: string | null;
+  coin_balance: number;
   created_at: string;
   updated_at: string;
+};
+
+export type CoinTransaction = {
+  id: string;
+  user_id: string;
+  amount: number;
+  reason: 'daily_checkin' | 'share' | 'apply' | 'spend_premium';
+  wallpaper_id: string | null;
+  created_at: string;
 };
 
 export type Favourite = {

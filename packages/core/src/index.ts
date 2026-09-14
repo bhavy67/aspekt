@@ -16,3 +16,11 @@
  */
 
 export const ASPEKT_PACKAGE = '@aspekt/core' as const;
+
+export const COIN_REWARDS = {
+  daily_checkin: 5,
+  share: 3,
+  apply: 1,
+} as const;
+
+export const DEFAULT_PREMIUM_COST = 10;

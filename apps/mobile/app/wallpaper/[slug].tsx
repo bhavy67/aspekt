@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Animated,
   Image,
   Platform,
   Pressable,
   ScrollView,
+  Share,
   StatusBar,
   StyleSheet,
   Text,
@@ -18,6 +20,7 @@ import type { WallpaperDetail } from '@aspekt/types';
 import { darkTheme, lightTheme } from '../../lib/theme';
 import { addFavourite, getWallpaper, isFavourited, removeFavourite } from '../../lib/queries';
 import { useAuth } from '../../context/auth-context';
+import { awardCoins, getCoinBalance, spendCoins } from '../../lib/coins';
 
 const HEADER_HEIGHT = 380;
 
@@ -31,6 +34,7 @@ export default function WallpaperDetailScreen() {
   const [loading, setLoading] = useState(true);
   const [favourited, setFavourited] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -45,8 +49,57 @@ export default function WallpaperDetailScreen() {
   useEffect(() => {
     if (user && wallpaper) {
       isFavourited(user.id, wallpaper.id).then(setFavourited);
+      getCoinBalance(user.id).then(setCoinBalance);
     }
   }, [user, wallpaper]);
+
+  async function handleShare() {
+    if (!wallpaper) return;
+    try {
+      const result = await Share.share({
+        message: `Check out "${wallpaper.title}" on ASPEKT`,
+        url: wallpaper.thumbnail_url,
+      });
+      if (result.action === Share.sharedAction && user) {
+        const newBalance = await awardCoins(user.id, 'share', wallpaper.id);
+        setCoinBalance(newBalance);
+      }
+    } catch {
+      // share dismissed — no reward
+    }
+  }
+
+  async function handleSetWallpaper() {
+    if (!user) {
+      router.push('/auth/sign-in' as never);
+      return;
+    }
+    if (!wallpaper) return;
+    if (wallpaper.is_premium && wallpaper.coin_cost > 0) {
+      if (coinBalance < wallpaper.coin_cost) {
+        Alert.alert(
+          'Not Enough Coins',
+          `You need ${wallpaper.coin_cost} coins to unlock this wallpaper. You have ${coinBalance}.`,
+          [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Earn Coins',
+              onPress: () => router.push('/(tabs)/profile/coins' as never),
+            },
+          ],
+        );
+        return;
+      }
+      try {
+        const newBalance = await spendCoins(user.id, wallpaper.coin_cost, wallpaper.id);
+        setCoinBalance(newBalance);
+      } catch {
+        Alert.alert('Error', 'Could not process coins. Please try again.');
+        return;
+      }
+    }
+    router.push(`/wallpaper/customize?slug=${wallpaper.slug}` as never);
+  }
 
   async function toggleFavourite() {
     if (!user) {
@@ -98,6 +151,15 @@ export default function WallpaperDetailScreen() {
         hitSlop={12}
       >
         <Ionicons name="chevron-back" size={22} color="#EDEDF2" />
+      </Pressable>
+
+      {/* Floating share button */}
+      <Pressable
+        style={[styles.shareBtn, { backgroundColor: 'rgba(11,11,14,0.6)' }]}
+        onPress={handleShare}
+        hitSlop={12}
+      >
+        <Ionicons name="share-outline" size={20} color="#EDEDF2" />
       </Pressable>
 
       {/* Floating heart button */}
@@ -265,12 +327,18 @@ export default function WallpaperDetailScreen() {
             </Text>
           </Pressable>
         )}
-        <Pressable
-          style={styles.ctaPrimary}
-          onPress={() => router.push(`/wallpaper/customize?slug=${wallpaper.slug}` as never)}
-        >
-          <Ionicons name="phone-portrait-outline" size={18} color="#0B0B0E" />
-          <Text style={styles.ctaPrimaryText}>Set Wallpaper</Text>
+        <Pressable style={styles.ctaPrimary} onPress={handleSetWallpaper}>
+          {wallpaper.is_premium && wallpaper.coin_cost > 0 ? (
+            <>
+              <Ionicons name="diamond-outline" size={18} color="#0B0B0E" />
+              <Text style={styles.ctaPrimaryText}>{wallpaper.coin_cost} Coins</Text>
+            </>
+          ) : (
+            <>
+              <Ionicons name="phone-portrait-outline" size={18} color="#0B0B0E" />
+              <Text style={styles.ctaPrimaryText}>Set Wallpaper</Text>
+            </>
+          )}
         </Pressable>
       </View>
     </View>
@@ -285,6 +353,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: Platform.OS === 'ios' ? 56 : 28,
     left: 16,
+    zIndex: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shareBtn: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 56 : 28,
+    right: 60,
     zIndex: 20,
     width: 36,
     height: 36,

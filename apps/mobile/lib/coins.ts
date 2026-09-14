@@ -55,3 +55,14 @@ export async function hasClaimedToday(userId: string): Promise<boolean> {
     .limit(1);
   return (data?.length ?? 0) > 0;
 }
+
+export async function getAdWatchCountToday(userId: string): Promise<number> {
+  const today = new Date().toISOString().split('T')[0];
+  const { count } = await supabase
+    .from('coin_transactions')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('reason', 'rewarded_ad')
+    .gte('created_at', `${today}T00:00:00.000Z`);
+  return count ?? 0;
+}

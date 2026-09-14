@@ -66,6 +66,20 @@ const config: ExpoConfig = {
     'expo-router',
     'expo-font',
     [
+      'react-native-google-mobile-ads',
+      {
+        // Test App IDs from Google — replace before production submission.
+        // Android: https://admob.google.com
+        // iOS: https://admob.google.com
+        androidAppId: 'ca-app-pub-3940256099942544~3347511713',
+        iosAppId: 'ca-app-pub-3940256099942544~1458002511',
+        // User messaging platform for GDPR/CCPA consent
+        userTrackingUsageDescription:
+          'ASPEKT uses this to show you relevant ads and earn coins for watching them.',
+        skAdNetworkItems: [],
+      },
+    ],
+    [
       'expo-splash-screen',
       {
         backgroundColor: '#0B0B0E',

@@ -10,10 +10,18 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { AD_DAILY_LIMIT, COIN_REWARDS } from '@aspekt/core';
 import { Screen } from '../../../components/screen';
 import { darkTheme, lightTheme } from '../../../lib/theme';
 import { useAuth } from '../../../context/auth-context';
-import { claimDailyCheckin, getCoinBalance, hasClaimedToday } from '../../../lib/coins';
+import {
+  awardCoins,
+  claimDailyCheckin,
+  getAdWatchCountToday,
+  getCoinBalance,
+  hasClaimedToday,
+} from '../../../lib/coins';
+import { showRewardedAd } from '../../../lib/ads';
 
 const EARN_ACTIONS = [
   {
@@ -50,6 +58,9 @@ export default function CoinsScreen() {
   const [claimed, setClaimed] = useState(false);
   const [claiming, setClaiming] = useState(false);
   const [claimError, setClaimError] = useState('');
+  const [adsWatched, setAdsWatched] = useState(0);
+  const [adLoading, setAdLoading] = useState(false);
+  const [adError, setAdError] = useState('');
 
   const fg = theme.colors.foreground;
   const muted = theme.colors.muted;
@@ -59,12 +70,14 @@ export default function CoinsScreen() {
   const load = useCallback(async () => {
     if (!user) return;
     setLoadingBalance(true);
-    const [bal, alreadyClaimed] = await Promise.all([
+    const [bal, alreadyClaimed, adCount] = await Promise.all([
       getCoinBalance(user.id),
       hasClaimedToday(user.id),
+      getAdWatchCountToday(user.id),
     ]);
     setBalance(bal);
     setClaimed(alreadyClaimed);
+    setAdsWatched(adCount);
     setLoadingBalance(false);
   }, [user]);
 
@@ -89,6 +102,26 @@ export default function CoinsScreen() {
       }
     } finally {
       setClaiming(false);
+    }
+  }
+
+  async function handleWatchAd() {
+    if (!user || adLoading || adsWatched >= AD_DAILY_LIMIT) return;
+    setAdLoading(true);
+    setAdError('');
+    try {
+      const earned = await showRewardedAd();
+      if (earned) {
+        const newBalance = await awardCoins(user.id, 'rewarded_ad');
+        setBalance(newBalance);
+        setAdsWatched((n) => n + 1);
+      } else {
+        setAdError('No ad available right now. Try again later.');
+      }
+    } catch {
+      setAdError('Something went wrong. Try again.');
+    } finally {
+      setAdLoading(false);
     }
   }
 
@@ -156,6 +189,40 @@ export default function CoinsScreen() {
           </Pressable>
         </View>
         {claimError ? <Text style={styles.claimError}>{claimError}</Text> : null}
+
+        {/* Watch Ad */}
+        <View
+          style={[
+            styles.claimCard,
+            { backgroundColor: surface, borderColor: border, marginTop: 8 },
+          ]}
+        >
+          <View style={styles.claimLeft}>
+            <Ionicons name="play-circle-outline" size={22} color="#818CF8" />
+            <View>
+              <Text style={[styles.claimTitle, { color: fg }]}>Watch an Ad</Text>
+              <Text style={[styles.claimDesc, { color: muted }]}>
+                {adsWatched >= AD_DAILY_LIMIT
+                  ? 'Limit reached · come back tomorrow'
+                  : `${adsWatched} / ${AD_DAILY_LIMIT} watched today`}
+              </Text>
+            </View>
+          </View>
+          <Pressable
+            style={[styles.claimBtn, adsWatched >= AD_DAILY_LIMIT && styles.claimBtnDone]}
+            onPress={handleWatchAd}
+            disabled={adLoading || adsWatched >= AD_DAILY_LIMIT}
+          >
+            {adLoading ? (
+              <ActivityIndicator size="small" color="#0B0B0E" />
+            ) : (
+              <Text style={[styles.claimBtnText, adsWatched >= AD_DAILY_LIMIT && { color: muted }]}>
+                {adsWatched >= AD_DAILY_LIMIT ? '✓ Done' : `+${COIN_REWARDS.rewarded_ad} Watch`}
+              </Text>
+            )}
+          </Pressable>
+        </View>
+        {adError ? <Text style={styles.claimError}>{adError}</Text> : null}
 
         {/* Earn actions */}
         <Text style={[styles.section, { color: muted }]}>HOW TO EARN</Text>

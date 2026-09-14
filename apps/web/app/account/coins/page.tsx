@@ -9,6 +9,11 @@ const supabase = createSupabaseBrowserClient();
 
 const EARN_ACTIONS = [
   { label: 'Daily Check-in', desc: 'Claim once per day from the mobile app', coins: 5 },
+  {
+    label: 'Watch an Ad',
+    desc: 'Watch a short rewarded ad in the mobile app · up to 5 per day',
+    coins: 10,
+  },
   { label: 'Share a Wallpaper', desc: 'Use the share button in the mobile app', coins: 3 },
   { label: 'Apply a Wallpaper', desc: 'Save a wallpaper to Photos in the mobile app', coins: 1 },
 ];

@@ -21,6 +21,9 @@ export const COIN_REWARDS = {
   daily_checkin: 5,
   share: 3,
   apply: 1,
+  rewarded_ad: 10,
 } as const;
 
 export const DEFAULT_PREMIUM_COST = 10;
+
+export const AD_DAILY_LIMIT = 5;

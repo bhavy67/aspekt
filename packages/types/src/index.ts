@@ -70,7 +70,7 @@ export type CoinTransaction = {
   id: string;
   user_id: string;
   amount: number;
-  reason: 'daily_checkin' | 'share' | 'apply' | 'spend_premium';
+  reason: 'daily_checkin' | 'share' | 'apply' | 'spend_premium' | 'rewarded_ad';
   wallpaper_id: string | null;
   created_at: string;
 };

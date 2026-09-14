@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import type { Collection } from '@aspekt/types';
 import { Screen } from '../../../components/screen';
+import { CollectionListSkeleton } from '../../../components/skeleton';
+import { ErrorState } from '../../../components/error-state';
 import { darkTheme, lightTheme } from '../../../lib/theme';
 import { getCollections } from '../../../lib/queries';
 
@@ -12,13 +14,25 @@ export default function CollectionsScreen() {
   const router = useRouter();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(false);
+    getCollections()
+      .then((data) => {
+        setCollections(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
-    getCollections().then((data) => {
-      setCollections(data);
-      setLoading(false);
-    });
-  }, []);
+    load();
+  }, [load]);
 
   return (
     <Screen edges={['top']}>
@@ -27,9 +41,9 @@ export default function CollectionsScreen() {
       </View>
 
       {loading ? (
-        <View style={styles.center}>
-          <Text style={{ color: theme.colors.muted }}>Loading…</Text>
-        </View>
+        <CollectionListSkeleton count={4} />
+      ) : error ? (
+        <ErrorState message="Could not load collections." onRetry={load} />
       ) : (
         <FlatList
           data={collections}
@@ -74,7 +88,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   title: { fontSize: 17, fontWeight: '700' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   list: { padding: 16, gap: 12, paddingBottom: 32 },
   card: { borderRadius: 16, overflow: 'hidden', aspectRatio: 16 / 9, justifyContent: 'flex-end' },
   cardOverlay: {

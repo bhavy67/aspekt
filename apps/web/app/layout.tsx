@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Nav } from '@/components/nav';
+import { OfflineBanner } from '@/components/offline-banner';
 import './globals.css';
 
 const inter = Inter({
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <Nav />
         <div className="pt-14">{children}</div>
+        <OfflineBanner />
       </body>
     </html>
   );

@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, Image, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import type { Wallpaper } from '@aspekt/types';
 import { Screen } from '../../components/screen';
+import { WallpaperGridSkeleton } from '../../components/skeleton';
+import { ErrorState } from '../../components/error-state';
 import { darkTheme, lightTheme } from '../../lib/theme';
 import { getWallpapers } from '../../lib/queries';
 
@@ -12,13 +14,25 @@ export default function HomeScreen() {
   const router = useRouter();
   const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const load = useCallback(() => {
+    setLoading(true);
+    setError(false);
+    getWallpapers({ limit: 30 })
+      .then((data) => {
+        setWallpapers(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
+  }, []);
 
   useEffect(() => {
-    getWallpapers({ limit: 30 }).then((data) => {
-      setWallpapers(data);
-      setLoading(false);
-    });
-  }, []);
+    load();
+  }, [load]);
 
   return (
     <Screen edges={['top']}>
@@ -27,9 +41,9 @@ export default function HomeScreen() {
       </View>
 
       {loading ? (
-        <View style={styles.center}>
-          <Text style={{ color: theme.colors.muted }}>Loading…</Text>
-        </View>
+        <WallpaperGridSkeleton count={12} />
+      ) : error ? (
+        <ErrorState message="Could not load wallpapers." onRetry={load} />
       ) : (
         <FlatList
           data={wallpapers}
@@ -44,7 +58,7 @@ export default function HomeScreen() {
                 style={[styles.cardImage, { backgroundColor: theme.colors.surface }]}
                 resizeMode="cover"
               />
-              <View style={[styles.cardOverlay]}>
+              <View style={styles.cardOverlay}>
                 <Text style={styles.cardTitle} numberOfLines={1}>
                   {item.title}
                 </Text>
@@ -64,7 +78,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   title: { fontSize: 17, fontWeight: '700', letterSpacing: 2, textTransform: 'uppercase' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   grid: { padding: 8, paddingBottom: 32 },
   row: { gap: 8 },
   card: { flex: 1, borderRadius: 12, overflow: 'hidden', marginBottom: 8, aspectRatio: 16 / 9 },

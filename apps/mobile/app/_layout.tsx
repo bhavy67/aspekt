@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import * as Linking from 'expo-linking';
 import { supabase } from '../lib/supabase';
 import { AuthProvider } from '../context/auth-context';
+import { OfflineBanner } from '../components/offline-banner';
 
 export default function RootLayout() {
   // Handle deep link auth callbacks (e.g. aspekt://auth/callback#access_token=...)
@@ -38,6 +39,7 @@ export default function RootLayout() {
         <Stack.Screen name="wallpaper/apply" options={{ presentation: 'modal' }} />
         <Stack.Screen name="auth/sign-in" options={{ presentation: 'modal' }} />
       </Stack>
+      <OfflineBanner />
     </AuthProvider>
   );
 }

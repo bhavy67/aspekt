@@ -22,7 +22,7 @@ export default async function FavouritesPage() {
   const wallpapers = (favLinks ?? []).map((r: any) => r.wallpapers);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-12">
+    <main className="mx-auto max-w-[1440px] px-6 py-12">
       <div className="mb-8 flex items-center gap-3">
         <a href="/account" className="text-sm text-muted hover:text-foreground">
           ← Account
@@ -37,7 +37,7 @@ export default async function FavouritesPage() {
           <p className="mt-1 text-xs text-subtle">Tap the ♡ on any wallpaper to save it.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {wallpapers.map((w) => (
             <WallpaperCard key={w.id} wallpaper={w} />
           ))}

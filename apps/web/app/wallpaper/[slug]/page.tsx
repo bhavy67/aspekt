@@ -41,7 +41,7 @@ export default async function WallpaperPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="mx-auto max-w-[1440px] px-6 py-12">
         <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
           {/* Preview */}
           <div>
@@ -149,7 +149,7 @@ export default async function WallpaperPage({ params }: Props) {
         {relatedWallpapers.length > 0 && (
           <section className="mt-16">
             <h2 className="mb-6 text-base font-semibold text-foreground">More Wallpapers</h2>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {relatedWallpapers.map((w) => (
                 <WallpaperCard key={w.id} wallpaper={w} />
               ))}

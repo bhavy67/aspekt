@@ -47,7 +47,7 @@ export default async function CollectionPage({ params }: Props) {
         }
       >
         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/40 to-transparent" />
-        <div className="relative mx-auto w-full max-w-6xl">
+        <div className="relative mx-auto w-full max-w-[1440px]">
           <Chip variant="accent" className="mb-3">
             Collection
           </Chip>
@@ -62,11 +62,11 @@ export default async function CollectionPage({ params }: Props) {
       </div>
 
       {/* Grid */}
-      <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="mx-auto max-w-[1440px] px-6 py-12">
         {collection.wallpapers.length === 0 ? (
           <p className="py-24 text-center text-muted">No wallpapers in this collection yet.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {collection.wallpapers.map((w, i) => (
               <WallpaperCard key={w.id} wallpaper={w} priority={i < 4} />
             ))}

@@ -20,7 +20,7 @@ export function WallpaperCard({ wallpaper, priority = false }: WallpaperCardProp
         src={wallpaper.thumbnail_url}
         alt={wallpaper.title}
         fill
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1280px) 25vw, (max-width: 1440px) 20vw, 16vw"
         className="object-cover transition-transform duration-300 group-hover:scale-105"
         priority={priority}
       />

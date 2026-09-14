@@ -14,7 +14,7 @@ export default async function ExplorePage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="mx-auto max-w-[1440px] px-6 py-12">
         <h1 className="mb-2 text-2xl font-bold text-foreground">Explore</h1>
         <p className="mb-12 text-sm text-muted">
           Discover the perfect wallpaper by category or feeling.
@@ -23,7 +23,7 @@ export default async function ExplorePage() {
         {/* Categories */}
         <section className="mb-16">
           <h2 className="mb-5 text-base font-semibold text-foreground">Categories</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
             {categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -48,7 +48,7 @@ export default async function ExplorePage() {
         {/* Moods */}
         <section>
           <h2 className="mb-5 text-base font-semibold text-foreground">Moods</h2>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             {moods.map((m) => (
               <Link
                 key={m.id}

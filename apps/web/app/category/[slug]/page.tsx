@@ -35,7 +35,7 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="mx-auto max-w-[1440px] px-6 py-12">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-foreground">{category.name}</h1>
           {category.description && (
@@ -47,7 +47,7 @@ export default async function CategoryPage({ params }: Props) {
         {wallpapers.length === 0 ? (
           <p className="py-24 text-center text-muted">No wallpapers in this category yet.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {wallpapers.map((w, i) => (
               <WallpaperCard key={w.id} wallpaper={w} priority={i < 4} />
             ))}

@@ -45,7 +45,7 @@ export function Nav() {
         scrolled ? 'bg-glass border-b border-border' : 'bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-6">
         <Link href="/" aria-label="ASPEKT home">
           <Logo />
         </Link>

@@ -14,13 +14,13 @@ export default async function CollectionsPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-12">
+      <div className="mx-auto max-w-[1440px] px-6 py-12">
         <h1 className="mb-2 text-2xl font-bold text-foreground">Collections</h1>
         <p className="mb-12 text-sm text-muted">
           Hand-curated sets of wallpapers for every context.
         </p>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {collections.map((col) => (
             <Link
               key={col.id}

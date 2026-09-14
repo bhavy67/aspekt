@@ -42,7 +42,7 @@ export default async function HomePage() {
       </section>
 
       {/* Featured grid */}
-      <section className="mx-auto max-w-6xl px-6 pb-20">
+      <section className="mx-auto max-w-[1440px] px-6 pb-20">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-foreground">Featured</h2>
           <Link
@@ -52,7 +52,7 @@ export default async function HomePage() {
             View all →
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {wallpapers.map((w, i) => (
             <WallpaperCard key={w.id} wallpaper={w} priority={i < 4} />
           ))}
@@ -61,7 +61,7 @@ export default async function HomePage() {
 
       {/* Categories */}
       {categories.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 pb-20">
+        <section className="mx-auto max-w-[1440px] px-6 pb-20">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">Browse by Category</h2>
             <Link
@@ -71,7 +71,7 @@ export default async function HomePage() {
               Explore →
             </Link>
           </div>
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
             {categories.map((cat) => (
               <Link
                 key={cat.id}
@@ -95,7 +95,7 @@ export default async function HomePage() {
 
       {/* Collections */}
       {collections.length > 0 && (
-        <section className="mx-auto max-w-6xl px-6 pb-20">
+        <section className="mx-auto max-w-[1440px] px-6 pb-20">
           <div className="mb-6 flex items-center justify-between">
             <h2 className="text-lg font-semibold text-foreground">Curated Collections</h2>
             <Link
@@ -105,7 +105,7 @@ export default async function HomePage() {
               All collections →
             </Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {collections.map((col) => (
               <Link
                 key={col.id}
@@ -133,7 +133,7 @@ export default async function HomePage() {
 
       {/* App CTA */}
       <section className="border-t border-border bg-surface">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-16 text-center sm:flex-row sm:justify-between sm:text-left">
+        <div className="mx-auto flex max-w-[1440px] flex-col items-center gap-4 px-6 py-16 text-center sm:flex-row sm:justify-between sm:text-left">
           <div>
             <h2 className="text-xl font-bold text-foreground">Take it with you</h2>
             <p className="mt-1 text-sm text-muted">

@@ -1,13 +1,7 @@
-/**
- * Supabase client for React Native.
- *
- * Phase 1: Stub only — no credentials are set.
- * Phase 7: Wire up with EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY.
- * Phase 8: Add AsyncStorage session persistence for auth token storage.
- *
- * When implemented, this client is the ONLY Supabase client instance
- * in the mobile app. Do not create additional instances.
- */
+import { createClient } from '@supabase/supabase-js';
 
-// Placeholder — will be implemented in Phase 7
-export const supabase = null;
+const url = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+
+// Phase 8: add AsyncStorage session persistence for auth token storage.
+export const supabase = createClient(url, anonKey);

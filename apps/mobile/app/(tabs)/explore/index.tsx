@@ -1,17 +1,103 @@
-import { Text, useColorScheme } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import type { Category, Mood } from '@aspekt/types';
 import { Screen } from '../../../components/screen';
 import { darkTheme, lightTheme } from '../../../lib/theme';
+import { getCategories, getMoods } from '../../../lib/queries';
 
-// Explore Hub — Phase 5: search bar, categories grid, moods grid, trending tags
 export default function ExploreScreen() {
   const scheme = useColorScheme();
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
+  const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [moods, setMoods] = useState<Mood[]>([]);
+
+  useEffect(() => {
+    Promise.all([getCategories(), getMoods()]).then(([cats, ms]) => {
+      setCategories(cats);
+      setMoods(ms);
+    });
+  }, []);
 
   return (
-    <Screen>
-      <Text style={{ color: theme.colors.muted, textAlign: 'center', marginTop: 40 }}>
-        Explore Hub
-      </Text>
+    <Screen edges={['top']}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={[styles.heading, { color: theme.colors.foreground }]}>Explore</Text>
+
+        {/* Categories */}
+        <Text style={[styles.section, { color: theme.colors.muted }]}>CATEGORIES</Text>
+        <View style={styles.grid}>
+          {categories.map((cat) => (
+            <Pressable
+              key={cat.id}
+              style={[styles.categoryCard, { backgroundColor: theme.colors.surface }]}
+              onPress={() => router.push(`/category/${cat.slug}`)}
+            >
+              {cat.cover_url && (
+                <Image
+                  source={{ uri: cat.cover_url }}
+                  style={StyleSheet.absoluteFill}
+                  resizeMode="cover"
+                />
+              )}
+              <View style={styles.cardOverlay} />
+              <Text style={styles.categoryLabel}>{cat.name}</Text>
+            </Pressable>
+          ))}
+        </View>
+
+        {/* Moods */}
+        <Text style={[styles.section, { color: theme.colors.muted, marginTop: 24 }]}>MOODS</Text>
+        <View style={styles.moodGrid}>
+          {moods.map((m) => (
+            <Pressable
+              key={m.id}
+              style={[styles.moodCard, { backgroundColor: theme.colors.surface }]}
+              onPress={() => router.push(`/mood/${m.slug}`)}
+            >
+              {m.cover_url && (
+                <Image
+                  source={{ uri: m.cover_url }}
+                  style={StyleSheet.absoluteFill}
+                  resizeMode="cover"
+                />
+              )}
+              <View style={styles.cardOverlay} />
+              <Text style={styles.categoryLabel}>{m.name}</Text>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { padding: 16, paddingBottom: 32 },
+  heading: { fontSize: 22, fontWeight: '700', marginBottom: 20 },
+  section: { fontSize: 11, fontWeight: '600', letterSpacing: 1.2, marginBottom: 10 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  categoryCard: {
+    width: '31%',
+    aspectRatio: 1,
+    borderRadius: 12,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    padding: 8,
+  },
+  moodGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  moodCard: {
+    width: '47%',
+    aspectRatio: 16 / 9,
+    borderRadius: 12,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+    padding: 10,
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(11,11,14,0.45)',
+  },
+  categoryLabel: { color: '#EDEDF2', fontSize: 12, fontWeight: '700', position: 'relative' },
+});

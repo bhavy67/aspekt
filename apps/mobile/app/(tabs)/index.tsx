@@ -1,17 +1,81 @@
-import { Text, useColorScheme } from 'react-native';
+import { useEffect, useState } from 'react';
+import { FlatList, Image, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import type { Wallpaper } from '@aspekt/types';
 import { Screen } from '../../components/screen';
 import { darkTheme, lightTheme } from '../../lib/theme';
+import { getWallpapers } from '../../lib/queries';
 
-// Home Feed — Phase 5: Core Wallpaper Experience
 export default function HomeScreen() {
   const scheme = useColorScheme();
   const theme = scheme === 'dark' ? darkTheme : lightTheme;
+  const router = useRouter();
+  const [wallpapers, setWallpapers] = useState<Wallpaper[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getWallpapers({ limit: 30 }).then((data) => {
+      setWallpapers(data);
+      setLoading(false);
+    });
+  }, []);
 
   return (
-    <Screen>
-      <Text style={{ color: theme.colors.muted, textAlign: 'center', marginTop: 40 }}>
-        Home Feed
-      </Text>
+    <Screen edges={['top']}>
+      <View style={[styles.header, { borderBottomColor: theme.colors.border }]}>
+        <Text style={[styles.title, { color: theme.colors.foreground }]}>ASPEKT</Text>
+      </View>
+
+      {loading ? (
+        <View style={styles.center}>
+          <Text style={{ color: theme.colors.muted }}>Loading…</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={wallpapers}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={styles.grid}
+          columnWrapperStyle={styles.row}
+          renderItem={({ item }) => (
+            <Pressable style={styles.card} onPress={() => router.push(`/wallpaper/${item.slug}`)}>
+              <Image
+                source={{ uri: item.thumbnail_url }}
+                style={[styles.cardImage, { backgroundColor: theme.colors.surface }]}
+                resizeMode="cover"
+              />
+              <View style={[styles.cardOverlay]}>
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {item.title}
+                </Text>
+              </View>
+            </Pressable>
+          )}
+        />
+      )}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  title: { fontSize: 17, fontWeight: '700', letterSpacing: 2, textTransform: 'uppercase' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  grid: { padding: 8, paddingBottom: 32 },
+  row: { gap: 8 },
+  card: { flex: 1, borderRadius: 12, overflow: 'hidden', marginBottom: 8, aspectRatio: 16 / 9 },
+  cardImage: { width: '100%', height: '100%', position: 'absolute' },
+  cardOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 8,
+    backgroundColor: 'rgba(11,11,14,0.55)',
+  },
+  cardTitle: { color: '#EDEDF2', fontSize: 11, fontWeight: '600' },
+});

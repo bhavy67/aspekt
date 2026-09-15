@@ -1,5 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
+const ALLOWED_HOSTS = new Set([
+  `${process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('https://', '')}`,
+  'images.unsplash.com',
+  'picsum.photos',
+]);
+
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get('url');
   const filename = req.nextUrl.searchParams.get('filename') ?? 'wallpaper.jpg';
@@ -15,6 +21,10 @@ export async function GET(req: NextRequest) {
 
   if (parsed.protocol !== 'https:') {
     return new NextResponse('Only https URLs allowed', { status: 400 });
+  }
+
+  if (!ALLOWED_HOSTS.has(parsed.hostname)) {
+    return new NextResponse('Hostname not allowed', { status: 403 });
   }
 
   let response: Response;

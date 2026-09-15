@@ -49,9 +49,15 @@ export async function uploadWallpaper(
 
   const file = formData.get('image') as File | null;
   if (!file || file.size === 0) return { error: 'No image selected' };
+  if (file.size > 12 * 1024 * 1024) return { error: 'File too large (max 12 MB)' };
+
+  const ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
+  if (!ALLOWED_TYPES.has(file.type))
+    return { error: 'Unsupported format. Use JPEG, PNG, WebP or AVIF.' };
 
   const title = (formData.get('title') as string)?.trim();
   if (!title) return { error: 'Title is required' };
+  if (title.length > 120) return { error: 'Title too long (max 120 chars)' };
 
   const categoryId = formData.get('category_id') as string;
   if (!categoryId) return { error: 'Category is required' };
@@ -61,13 +67,26 @@ export async function uploadWallpaper(
   const tagsRaw = (formData.get('tags') as string) || '';
   const tags = tagsRaw
     .split(',')
-    .map((t) => t.trim())
-    .filter(Boolean);
-  const width = parseInt(formData.get('width') as string) || 1080;
-  const height = parseInt(formData.get('height') as string) || 1920;
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean)
+    .slice(0, 20);
+
+  const width = parseInt(formData.get('width') as string) || 0;
+  const height = parseInt(formData.get('height') as string) || 0;
+  if (width < 100 || height < 100 || width > 8000 || height > 8000) {
+    return { error: 'Invalid dimensions. Expected 100–8000px per side.' };
+  }
 
   const slug = generateSlug(title);
-  const ext = (file.name.split('.').pop() ?? 'jpg').toLowerCase();
+  const rawExt = (file.name.split('.').pop() ?? 'jpg').toLowerCase();
+  const ALLOWED_EXTS: Record<string, string> = {
+    jpg: 'jpg',
+    jpeg: 'jpg',
+    png: 'png',
+    webp: 'webp',
+    avif: 'avif',
+  };
+  const ext = ALLOWED_EXTS[rawExt] ?? 'jpg';
   const storagePath = `${slug}.${ext}`;
 
   const admin = createAdminClient();
@@ -153,7 +172,7 @@ export async function deleteWallpaper(
   try {
     const url = new URL(imageUrl);
     const segment = url.pathname.split('/wallpapers/')[1];
-    if (segment) storagePath = segment.split('?')[0];
+    if (segment) storagePath = segment.split('?')[0] ?? null;
   } catch {
     // ignore — storage cleanup is best-effort
   }

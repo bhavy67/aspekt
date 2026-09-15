@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WallpaperPage({ params }: Props) {
   const { slug } = await params;
-  const [wallpaper, all] = await Promise.all([getWallpaper(slug), getWallpapers({ limit: 10 })]);
+  const [wallpaper, all] = await Promise.all([getWallpaper(slug), getWallpapers({ limit: 7 })]);
   if (!wallpaper) notFound();
 
   const related = all.filter((w) => w.slug !== slug).slice(0, 6);

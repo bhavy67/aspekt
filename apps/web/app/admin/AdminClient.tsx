@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState, useTransition } from 'react';
 import type { Category, Collection, Wallpaper } from '@aspekt/types';
@@ -96,12 +95,12 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
               style={{ aspectRatio: preview ? undefined : '9/16', minHeight: preview ? 0 : 240 }}
             >
               {preview ? (
-                <div
-                  className="relative w-full"
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full rounded-2xl object-cover"
                   style={{ aspectRatio: `${dimensions.width}/${dimensions.height || 1}` }}
-                >
-                  <Image src={preview} alt="Preview" fill className="rounded-2xl object-cover" />
-                </div>
+                />
               ) : (
                 <>
                   <svg
@@ -260,8 +259,12 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
                   target="_blank"
                   className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3 transition-colors hover:border-border-strong"
                 >
-                  <div className="relative h-14 w-8 flex-shrink-0 overflow-hidden rounded-lg bg-raised">
-                    <Image src={w.thumbnail_url} alt={w.title} fill className="object-cover" />
+                  <div className="h-14 w-8 flex-shrink-0 overflow-hidden rounded-lg bg-raised">
+                    <img
+                      src={w.thumbnail_url}
+                      alt={w.title}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground">{w.title}</p>

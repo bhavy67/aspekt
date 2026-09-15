@@ -11,8 +11,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'picsum.photos' },
       { protocol: 'https', hostname: 'images.unsplash.com' },
-      // Supabase Storage — wallpaper CDN (Phase 7+)
-      { protocol: 'https', hostname: '*.supabase.co', pathname: '/storage/v1/object/public/**' },
+      // Supabase Storage — direct objects and image transforms
+      { protocol: 'https', hostname: '*.supabase.co' },
+      { protocol: 'https', hostname: 'ypppcbxjowvbnzvvkmpe.supabase.co' },
     ],
   },
 };

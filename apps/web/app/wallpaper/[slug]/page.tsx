@@ -56,6 +56,7 @@ export default async function WallpaperPage({ params }: Props) {
                 sizes="(max-width: 1024px) 100vw, 380px"
                 className="object-cover"
                 priority
+                unoptimized
               />
               {/* Screen overlay hint */}
               <div className="pointer-events-none absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/10" />

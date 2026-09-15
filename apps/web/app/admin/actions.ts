@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createAdminClient } from '@/lib/supabase-admin';
 import { getSessionToken } from '@/lib/admin-auth';
@@ -132,6 +133,10 @@ export async function uploadWallpaper(
     });
   }
 
+  revalidatePath('/admin');
+  revalidatePath('/browse');
+  revalidatePath('/');
+
   return { slug, imageUrl: publicUrl };
 }
 
@@ -168,6 +173,10 @@ export async function deleteWallpaper(
   if (storagePath) {
     await admin.storage.from('wallpapers').remove([storagePath]);
   }
+
+  revalidatePath('/admin');
+  revalidatePath('/browse');
+  revalidatePath('/');
 
   return {};
 }

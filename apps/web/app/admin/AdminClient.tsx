@@ -18,10 +18,9 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
   const [preview, setPreview] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [slugPreview, setSlugPreview] = useState('');
-  const [result, setResult] = useState<{ error?: string; slug?: string; imageUrl?: string } | null>(
-    null,
-  );
+  const [result, setResult] = useState<{ error?: string; slug?: string } | null>(null);
   const [uploads, setUploads] = useState<Wallpaper[]>(recentWallpapers);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
@@ -68,9 +67,18 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
     });
   }
 
-  function handleDelete(w: Wallpaper) {
-    if (!confirm(`Delete "${w.title}"? This cannot be undone.`)) return;
+  function confirmDelete(w: Wallpaper) {
+    setConfirmDeleteId(w.id);
+    setDeleteError(null);
+  }
+
+  function cancelDelete() {
+    setConfirmDeleteId(null);
+  }
+
+  function executeDelete(w: Wallpaper) {
     setDeletingId(w.id);
+    setConfirmDeleteId(null);
     setDeleteError(null);
 
     startDeleteTransition(async () => {
@@ -233,14 +241,12 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
               </select>
             </div>
 
-            {/* Dimensions display */}
             {dimensions.width > 0 && (
               <p className="text-xs text-muted">
-                Detected size: {dimensions.width} × {dimensions.height}px
+                Detected: {dimensions.width} × {dimensions.height}px
               </p>
             )}
 
-            {/* Result */}
             {result?.error && (
               <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-400">
                 {result.error}
@@ -250,12 +256,11 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
               <div className="rounded-xl bg-green-500/10 px-4 py-3 text-sm text-green-400">
                 Uploaded!{' '}
                 <Link href={`/wallpaper/${result.slug}`} className="underline" target="_blank">
-                  View wallpaper
+                  View →
                 </Link>
               </div>
             )}
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={isPending || !preview}
@@ -279,76 +284,115 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
 
             <div className="flex flex-col gap-2">
               {uploads.length === 0 && <p className="text-sm text-muted">No wallpapers yet.</p>}
+
               {uploads.map((w) => {
                 const isThisDeleting = isDeleting && deletingId === w.id;
+                const isConfirming = confirmDeleteId === w.id;
+
                 return (
                   <div
                     key={w.id}
-                    className={`flex items-center gap-3 rounded-xl border border-border bg-surface p-3 transition-opacity ${isThisDeleting ? 'opacity-40' : ''}`}
+                    className={`overflow-hidden rounded-xl border border-border bg-surface transition-all duration-200 ${isThisDeleting ? 'opacity-40' : ''}`}
                   >
-                    {/* Thumbnail */}
-                    <Link href={`/wallpaper/${w.slug}`} target="_blank" className="flex-shrink-0">
-                      <div className="h-14 w-8 overflow-hidden rounded-lg bg-raised">
-                        <img
-                          src={w.thumbnail_url}
-                          alt={w.title}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                    </Link>
+                    {/* Normal row */}
+                    <div className="flex items-center gap-3 p-3">
+                      <Link
+                        href={`/wallpaper/${w.slug}`}
+                        target="_blank"
+                        className="flex-shrink-0"
+                        tabIndex={isConfirming ? -1 : undefined}
+                      >
+                        <div className="h-14 w-8 overflow-hidden rounded-lg bg-raised">
+                          <img
+                            src={w.thumbnail_url}
+                            alt={w.title}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                      </Link>
 
-                    {/* Info */}
-                    <Link
-                      href={`/wallpaper/${w.slug}`}
-                      target="_blank"
-                      className="min-w-0 flex-1 hover:opacity-80"
-                    >
-                      <p className="truncate text-sm font-medium text-foreground">{w.title}</p>
-                      <p className="text-[11px] text-muted">
-                        {w.width}×{w.height}
-                      </p>
-                    </Link>
+                      <Link
+                        href={`/wallpaper/${w.slug}`}
+                        target="_blank"
+                        className="min-w-0 flex-1 hover:opacity-75"
+                        tabIndex={isConfirming ? -1 : undefined}
+                      >
+                        <p className="truncate text-sm font-medium text-foreground">{w.title}</p>
+                        <p className="text-[11px] text-muted">
+                          {w.width}×{w.height}
+                        </p>
+                      </Link>
 
-                    {/* Delete button */}
-                    <button
-                      onClick={() => handleDelete(w)}
-                      disabled={isDeleting}
-                      title="Delete wallpaper"
-                      className="flex-shrink-0 rounded-lg p-1.5 text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      {isThisDeleting ? (
-                        <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
+                      {/* Trash / spinner */}
+                      <button
+                        onClick={() => (isConfirming ? cancelDelete() : confirmDelete(w))}
+                        disabled={isDeleting}
+                        title={isConfirming ? 'Cancel' : 'Delete'}
+                        className={`flex-shrink-0 rounded-lg p-1.5 transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+                          isConfirming
+                            ? 'bg-red-500/10 text-red-400'
+                            : 'text-muted hover:bg-red-500/10 hover:text-red-400'
+                        }`}
+                      >
+                        {isThisDeleting ? (
+                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v8H4z"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            className="h-4 w-4"
+                            viewBox="0 0 24 24"
+                            fill="none"
                             stroke="currentColor"
-                            strokeWidth="4"
-                          />
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v8H4z"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="h-4 w-4"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
-                          <path d="M10 11v6M14 11v6" />
-                          <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
-                        </svg>
-                      )}
-                    </button>
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6" />
+                            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                            <path d="M10 11v6M14 11v6" />
+                            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+
+                    {/* Inline confirm strip */}
+                    <div
+                      className={`overflow-hidden transition-all duration-200 ${
+                        isConfirming ? 'max-h-14' : 'max-h-0'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between border-t border-red-500/20 bg-red-500/5 px-3 py-2.5">
+                        <p className="text-xs font-medium text-red-400">Delete this wallpaper?</p>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={cancelDelete}
+                            className="rounded-lg px-3 py-1 text-xs font-medium text-muted transition-colors hover:text-foreground"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => executeDelete(w)}
+                            className="rounded-lg bg-red-500 px-3 py-1 text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 );
               })}

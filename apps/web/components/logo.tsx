@@ -1,17 +1,13 @@
-'use client';
-
-import { useId } from 'react';
-
 interface LogoMarkProps {
   size?: number;
   variant?: 'gradient' | 'mono';
   className?: string;
 }
 
-export function LogoMark({ size = 20, variant = 'gradient', className }: LogoMarkProps) {
-  const id = useId();
+const GRADIENT_ID = 'aspekt-logo-gradient';
 
-  const stroke = variant === 'gradient' ? `url(#${id})` : 'currentColor';
+export function LogoMark({ size = 20, variant = 'gradient', className }: LogoMarkProps) {
+  const stroke = variant === 'gradient' ? `url(#${GRADIENT_ID})` : 'currentColor';
 
   return (
     <svg
@@ -24,7 +20,7 @@ export function LogoMark({ size = 20, variant = 'gradient', className }: LogoMar
     >
       {variant === 'gradient' && (
         <defs>
-          <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={GRADIENT_ID} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#818CF8" />
             <stop offset="100%" stopColor="#22D3EE" />
           </linearGradient>

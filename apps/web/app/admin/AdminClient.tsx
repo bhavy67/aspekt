@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRef, useState, useTransition } from 'react';
 import type { Category, Collection, Wallpaper } from '@aspekt/types';
-import { logoutAdmin, uploadWallpaper } from './actions';
+import { deleteWallpaper, logoutAdmin, uploadWallpaper } from './actions';
 
 type Props = {
   categories: Category[];
@@ -21,8 +21,12 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
   const [result, setResult] = useState<{ error?: string; slug?: string; imageUrl?: string } | null>(
     null,
   );
-  const [isPending, startTransition] = useTransition();
   const [uploads, setUploads] = useState<Wallpaper[]>(recentWallpapers);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const [isPending, startTransition] = useTransition();
+  const [isDeleting, startDeleteTransition] = useTransition();
 
   function handleFile(file: File) {
     const url = URL.createObjectURL(file);
@@ -61,6 +65,22 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
         setDimensions({ width: 0, height: 0 });
         setSlugPreview('');
       }
+    });
+  }
+
+  function handleDelete(w: Wallpaper) {
+    if (!confirm(`Delete "${w.title}"? This cannot be undone.`)) return;
+    setDeletingId(w.id);
+    setDeleteError(null);
+
+    startDeleteTransition(async () => {
+      const res = await deleteWallpaper(w.id, w.image_url);
+      if (res.error) {
+        setDeleteError(res.error);
+      } else {
+        setUploads((prev) => prev.filter((u) => u.id !== w.id));
+      }
+      setDeletingId(null);
     });
   }
 
@@ -250,30 +270,88 @@ export function AdminClient({ categories, collections, recentWallpapers }: Props
             <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted">
               Recent uploads
             </h2>
-            <div className="flex flex-col gap-3">
+
+            {deleteError && (
+              <p className="mb-3 rounded-xl bg-red-500/10 px-3 py-2.5 text-xs text-red-400">
+                {deleteError}
+              </p>
+            )}
+
+            <div className="flex flex-col gap-2">
               {uploads.length === 0 && <p className="text-sm text-muted">No wallpapers yet.</p>}
-              {uploads.map((w) => (
-                <Link
-                  key={w.id}
-                  href={`/wallpaper/${w.slug}`}
-                  target="_blank"
-                  className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3 transition-colors hover:border-border-strong"
-                >
-                  <div className="h-14 w-8 flex-shrink-0 overflow-hidden rounded-lg bg-raised">
-                    <img
-                      src={w.thumbnail_url}
-                      alt={w.title}
-                      className="h-full w-full object-cover"
-                    />
+              {uploads.map((w) => {
+                const isThisDeleting = isDeleting && deletingId === w.id;
+                return (
+                  <div
+                    key={w.id}
+                    className={`flex items-center gap-3 rounded-xl border border-border bg-surface p-3 transition-opacity ${isThisDeleting ? 'opacity-40' : ''}`}
+                  >
+                    {/* Thumbnail */}
+                    <Link href={`/wallpaper/${w.slug}`} target="_blank" className="flex-shrink-0">
+                      <div className="h-14 w-8 overflow-hidden rounded-lg bg-raised">
+                        <img
+                          src={w.thumbnail_url}
+                          alt={w.title}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    </Link>
+
+                    {/* Info */}
+                    <Link
+                      href={`/wallpaper/${w.slug}`}
+                      target="_blank"
+                      className="min-w-0 flex-1 hover:opacity-80"
+                    >
+                      <p className="truncate text-sm font-medium text-foreground">{w.title}</p>
+                      <p className="text-[11px] text-muted">
+                        {w.width}×{w.height}
+                      </p>
+                    </Link>
+
+                    {/* Delete button */}
+                    <button
+                      onClick={() => handleDelete(w)}
+                      disabled={isDeleting}
+                      title="Delete wallpaper"
+                      className="flex-shrink-0 rounded-lg p-1.5 text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {isThisDeleting ? (
+                        <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8H4z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="h-4 w-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                          <path d="M10 11v6M14 11v6" />
+                          <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                        </svg>
+                      )}
+                    </button>
                   </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-foreground">{w.title}</p>
-                    <p className="text-[11px] text-muted">
-                      {w.width}×{w.height}
-                    </p>
-                  </div>
-                </Link>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>

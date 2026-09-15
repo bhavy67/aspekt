@@ -134,3 +134,40 @@ export async function uploadWallpaper(
 
   return { slug, imageUrl: publicUrl };
 }
+
+export async function deleteWallpaper(
+  wallpaperId: string,
+  imageUrl: string,
+): Promise<{ error?: string }> {
+  if (!(await checkAdminAuth())) return { error: 'Unauthorized' };
+
+  const admin = createAdminClient();
+
+  // Extract storage path from the public URL
+  let storagePath: string | null = null;
+  try {
+    const url = new URL(imageUrl);
+    const segment = url.pathname.split('/wallpapers/')[1];
+    if (segment) storagePath = segment.split('?')[0];
+  } catch {
+    // ignore — storage cleanup is best-effort
+  }
+
+  // Delete junction table rows first
+  await Promise.all([
+    admin.from('wallpaper_categories').delete().eq('wallpaper_id', wallpaperId),
+    admin.from('wallpaper_moods').delete().eq('wallpaper_id', wallpaperId),
+    admin.from('wallpaper_collections').delete().eq('wallpaper_id', wallpaperId),
+  ]);
+
+  // Delete DB row
+  const { error: dbError } = await admin.from('wallpapers').delete().eq('id', wallpaperId);
+  if (dbError) return { error: `Database error: ${dbError.message}` };
+
+  // Delete from storage (best-effort)
+  if (storagePath) {
+    await admin.storage.from('wallpapers').remove([storagePath]);
+  }
+
+  return {};
+}
